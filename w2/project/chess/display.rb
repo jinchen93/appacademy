@@ -23,9 +23,9 @@ class Display
         current_pos = [row_idx, col_idx]
 
         if current_pos == @cursor.cursor_pos
-          print piece.to_s.blue.on_white.blink
+          print piece.symbol.blue.on_white.blink
         else
-          print piece.to_s
+          print piece.symbol.colorize(piece.color)
         end
 
         print ' '
@@ -43,12 +43,9 @@ end
 if __FILE__ == $PROGRAM_NAME
   board = Board.new
   display = Display.new(board)
-  # loop do
+  loop do
     display.render
-  #   display.cursor.get_input
-  # end
-  # queen = Queen.new(board, [2,0])
-  # p queen.moves
-  king = King.new(board, [3,3])
-  p king.moves
+    display.cursor.get_input
+  end
+  
 end

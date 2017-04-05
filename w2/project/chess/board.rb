@@ -26,7 +26,7 @@ class Board
     end
 
     self[end_pos] = self[start_pos]
-    self[start_pos] = NullPiece.new
+    self[start_pos] = NullPiece.instance
   end
 
   def in_bounds?(pos)
@@ -40,6 +40,7 @@ class Board
   private
 
   def setup_grid
+
     @grid << [
       Rook.new(@board, [0,0], :black),
       Knight.new(@board, [0,1], :black),
@@ -85,6 +86,7 @@ class Board
       Knight.new(@board, [7,6], :red),
       Rook.new(@board, [7,7], :red)
     ]
+    nil
   end
 
 end
