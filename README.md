@@ -1,5 +1,5 @@
-# App Academy Homeworks & Projects
-All of the homework and projects during my time at a/A!
+# App Academy Homework & Projects
+All of my homework and projects for a/A!
 
 ## Week 1
 #### Day 1: Ghost
