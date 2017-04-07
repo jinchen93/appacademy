@@ -1,5 +1,3 @@
-require 'byebug'
-
 def bad_two_sum?(arr, target_sum) # O(n^2)
   (0...arr.length - 1).each do |first|
     (first + 1...arr.length).each do |second|
@@ -14,7 +12,6 @@ def okay_two_sum?(arr, target_sum)
   found = false
   sorted_arr.each do |el|
     found = true if binary_search(arr, target_sum - el)
-    byebug
   end
   found
 end
@@ -34,7 +31,7 @@ def binary_search(arr, target)
 end
 
 if __FILE__ == $PROGRAM_NAME
-p arr = [0, 1, 5, 7]
-p okay_two_sum?(arr, 6) # => should be true
-p okay_two_sum?(arr, 10) # => should be false
+  p arr = [0, 1, 5, 7]
+  p okay_two_sum?(arr, 6) # => should be true
+  p okay_two_sum?(arr, 10) # => should be false
 end
