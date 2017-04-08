@@ -26,19 +26,86 @@ describe Hand do
   end
 
   context "#is_royal_flush?" do
-    before(:each) do
+    it "detects a royal flush" do
       hand.add_cards([
-        Card.new(10, :spade),
-        Card.new(:j, :spade),
-        Card.new(:q, :spade),
-        Card.new(:k, :spade),
-        Card.new(:a, :spade)
-        ])
+        double("card", suit: :heart, value: 10),
+        double("card", suit: :heart, value: :j),
+        double("card", suit: :heart, value: :q),
+        double("card", suit: :heart, value: :k),
+        double("card", suit: :heart, value: :a)
+      ])
+      expect(hand.is_royal_flush?).to be_truthy
     end
 
-    it "detects a royal flush" do
-      expect(hand.is_royal_flush?).to be_truthy
+    it "does not give false positives for straights" do
+      hand.add_cards([
+        double("card", suit: :heart, value: 10),
+        double("card", suit: :spade, value: :j),
+        double("card", suit: :heart, value: :q),
+        double("card", suit: :heart, value: :k),
+        double("card", suit: :heart, value: :a)
+      ])
+      expect(hand.is_royal_flush?).to be_falsey
+    end
+
+    it "does not give false positives for flushes" do
+      hand.add_cards([
+        double("card", suit: :heart, value: 10),
+        double("card", suit: :heart, value: 10),
+        double("card", suit: :heart, value: :q),
+        double("card", suit: :heart, value: :k),
+        double("card", suit: :heart, value: :a)
+      ])
+      expect(hand.is_royal_flush?).to be_falsey
     end
   end
 
+  context "#is_pair?" do
+    it "detects the pair if there is only one pair" do
+      hand.add_cards([
+        double("card", suit: :heart, value: 10),
+        double("card", suit: :spade, value: :j),
+        double("card", suit: :heart, value: :q),
+        double("card", suit: :spade, value: 10),
+        double("card", suit: :heart, value: :a)
+      ])
+      expect(hand.is_pair?).to be_truthy
+    end
+
+    it "detects pairs if there is two pairs" do
+      hand.add_cards([
+        double("card", suit: :heart, value: 10),
+        double("card", suit: :spade, value: 9),
+        double("card", suit: :heart, value: 10),
+        double("card", suit: :diamond, value: 9),
+        double("card", suit: :heart, value: :a)
+      ])
+      expect(hand.is_pair?).to be_truthy
+    end
+
+    it "detects if there is no pair" do
+      hand.add_cards([
+        double("card", suit: :heart, value: 10),
+        double("card", suit: :spade, value: :j),
+        double("card", suit: :heart, value: 9),
+        double("card", suit: :diamond, value: 8),
+        double("card", suit: :heart, value: :a)
+      ])
+      expect(hand.is_pair?).to be_falsey
+    end
+  end
+
+  context "#is_three_of_a_kind?" do
+    it "detects if a three of a kind is present" do
+      hand.add_cards([
+        double("card", suit: :heart, value: 10),
+        double("card", suit: :spade, value: 10),
+        double("card", suit: :heart, value: 9),
+        double("card", suit: :diamond, value: 10),
+        double("card", suit: :heart, value: :a)
+      ])
+
+      expect(hand.is_three_of_a_kind?).to be_truthy
+    end
+  end
 end
