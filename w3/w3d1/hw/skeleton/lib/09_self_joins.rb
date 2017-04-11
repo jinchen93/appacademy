@@ -237,47 +237,32 @@ def start_at_craiglockhart
   # by taking one bus, including 'Craiglockhart' itself. Include the stop name,
   # as well as the company and bus no. of the relevant service.
 
-
   execute(<<-SQL)
     SELECT
-      DISTINCT
-      stopa.name,
-      a.company,
-      a.num
+      end_route_stops.name,
+      end_routes.company,
+      end_routes.num
     FROM
-      routes a
+      routes as start_routes
     JOIN
-      routes b
+      routes as end_routes
       ON
-      a.company = b.company AND a.num = b.num
-    JOIN
-      stops stopa ON (a.stop_id = stopa.id)
-    JOIN
-      stops stopb ON (b.stop_id = stopb.id)
-    WHERE
-      a.num
-      IN (
-        SELECT num
-        FROM routes
-        WHERE
-          stop_id = (
-            SELECT id
-            FROM stops
-            WHERE name = 'Craiglockhart')
-        )
+      start_routes.num = end_routes.num
       AND
-      a.company
-      IN (
-        SELECT  company
-        FROM routes
+      start_routes.company = end_routes.company
+    JOIN
+      stops as end_route_stops
+      ON
+      end_routes.stop_id = end_route_stops.id
+    WHERE
+      start_routes.stop_id = (
+        SELECT
+          stops.id
+        FROM
+          stops
         WHERE
-          stop_id = (
-            SELECT id
-            FROM stops
-            WHERE name = 'Craiglockhart')
-        )
-    ORDER BY
-      stopa.name
+          stops.name = 'Craiglockhart'
+      )
   SQL
 end
 
@@ -286,103 +271,40 @@ def craiglockhart_to_sighthill
   # Sighthill. Show the bus no. and company for the first bus, the name of the
   # stop for the transfer, and the bus no. and company for the second bus.
   execute(<<-SQL)
-    SELECT
-      craiglockhart.num,
-      craiglockhart.company,
-      craiglockhart.name,
-      sighthill.num,
-      sighthill.company
-    FROM
-      (
-        SELECT
-          DISTINCT
-          stopa.name as name,
-          a.company as company,
-          a.num as num
-        FROM
-          routes a
-        JOIN
-          routes b
-          ON
-          a.company = b.company AND a.num = b.num
-        JOIN
-          stops stopa ON (a.stop_id = stopa.id)
-        JOIN
-          stops stopb ON (b.stop_id = stopb.id)
-        WHERE
-          a.num
-          IN (
-            SELECT num
-            FROM routes
-            WHERE
-              stop_id = (
-                SELECT id
-                FROM stops
-                WHERE name = 'Craiglockhart')
-            )
-          AND
-          a.company
-          IN (
-            SELECT  company
-            FROM routes
-            WHERE
-              stop_id = (
-                SELECT id
-                FROM stops
-                WHERE name = 'Craiglockhart')
-            )
-          AND stopa.name != 'Craiglockhart'
-          ORDER BY
-            stopa.name
+      SELECT
+        DISTINCT
+        start.num,
+        start.company,
+        transfer.name,
+        finish.num,
+        finish.company
+      FROM
+        routes as start
+      JOIN
+        routes as to_transfer
+        ON
+        start.company = to_transfer.company
+        AND
+        start.num = to_transfer.num
+      JOIN
+        stops as transfer ON to_transfer.stop_id = transfer.id
+      JOIN
+        routes as from_transfer ON from_transfer.stop_id = transfer.id
+      JOIN
+        routes as finish ON from_transfer.company = finish.company
+        AND finish.num = from_transfer.num
+    WHERE
+      start.stop_id = (
+        SELECT id
+        FROM stops
+        WHERE name = 'Craiglockhart'
       )
-      AS craiglockhart
-    JOIN
-      (
-        SELECT
-          DISTINCT
-          stopa.name as name,
-          a.company as company,
-          a.num as num
-        FROM
-          routes a
-        JOIN
-          routes b
-          ON
-          a.company = b.company AND a.num = b.num
-        JOIN
-          stops stopa ON (a.stop_id = stopa.id)
-        JOIN
-          stops stopb ON (b.stop_id = stopb.id)
-        WHERE
-          a.num
-          IN (
-            SELECT num
-            FROM routes
-            WHERE
-              stop_id = (
-                SELECT id
-                FROM stops
-                WHERE name = 'Sighthill')
-            )
-          AND
-          a.company
-          IN (
-            SELECT  company
-            FROM routes
-            WHERE
-              stop_id = (
-                SELECT id
-                FROM stops
-                WHERE name = 'Sighthill')
-            )
-          AND stopa.name != 'Sighthill'
-          ORDER BY
-            stopa.name
+      AND
+      finish.stop_id = (
+        SELECT id
+        FROM stops
+        WHERE name = 'Sighthill'
       )
-      AS sighthill
-      ON sighthill.name = craiglockhart.name
-    ORDER BY
-      craiglockhart.num
   SQL
 end
 
