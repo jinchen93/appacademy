@@ -1,10 +1,26 @@
 class ShortenedUrl < ApplicationRecord
   include SecureRandom
-  validate :no_spamming, :nonpremium_max
+  # validate :no_spamming, :nonpremium_max
 
   validates :long_url, presence: true, uniqueness: true
   validates :short_url, presence: true, uniqueness: true
   validates :submitter_id, presence: true
+
+  belongs_to :submitter,
+    foreign_key: :submitter_id,
+    class_name: :User
+
+  has_many :visits_ids,
+    foreign_key: :link_id,
+    class_name: :Visit
+
+  has_many :taggings,
+    foreign_key: :link_id,
+    class_name: :Tagging
+
+  has_many :tag_topics,
+    through: :taggings,
+    source: :tag
 
   def self.random_code
     code = SecureRandom.urlsafe_base64(5)
@@ -22,24 +38,9 @@ class ShortenedUrl < ApplicationRecord
     )
   end
 
-  belongs_to :submitter,
-    primary_key: :id,
-    foreign_key: :submitter_id,
-    class_name: :User
+  def self.prune
 
-  has_many :visits_ids,
-    primary_key: :id,
-    foreign_key: :link_id,
-    class_name: :Visit
-
-  has_many :taggings,
-    primary_key: :id,
-    foreign_key: :link_id,
-    class_name: :Tagging
-
-  has_many :tag_topics,
-    through: :taggings,
-    source: :tag
+  end
 
   def num_clicks
     # Visit.all.select { |visit| visit.link_id == self.id }.count
@@ -86,4 +87,5 @@ class ShortenedUrl < ApplicationRecord
       end
     end
   end
+
 end
