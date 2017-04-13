@@ -1,0 +1,47 @@
+
+
+puts "Input your email"
+print "> "
+email = gets.chomp
+user = User.find_by(email: email)
+user ||= User.create(email: email) # didn't find user
+
+puts
+puts "What do you want to do?"
+puts "0. Create shortened URL"
+puts "1. Visit shortened URL"
+print "> "
+choice = gets.chomp
+puts
+
+if choice == '0'
+  puts "Type in your long url"
+  print "> "
+  url = gets.chomp
+  shortened = ShortenedUrl.find_by(long_url: url)
+  shortened ||= ShortenedUrl.shortenify(user, url)
+  puts
+  puts "Short url is: #{shortened.short_url}"
+else
+  puts "Type in the shortened url"
+  print "> "
+  url = gets.chomp
+  long = ShortenedUrl.find_by(short_url: url)
+  if long.nil?
+    puts "Link not found!"
+    system(exit)
+  end
+  puts
+  Visit.record_visit!(user, long)
+  puts "Link has #{long.num_clicks} visits"
+  print "Launching #{long.long_url} "
+  3.times do
+    print ". "
+    sleep(0.4)
+  end
+  puts
+  Launchy.open(long.long_url)
+
+
+end
+puts "Goodbye! Thank you for using tiny.io!"
