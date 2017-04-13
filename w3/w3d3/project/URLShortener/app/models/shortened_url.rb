@@ -1,4 +1,4 @@
-class ShortenedUrl < ApplicationRecord
+  class ShortenedUrl < ApplicationRecord
   include SecureRandom
   # validate :no_spamming, :nonpremium_max
 
@@ -38,8 +38,12 @@ class ShortenedUrl < ApplicationRecord
     )
   end
 
-  def self.prune
-
+  def self.prune(n)
+    self
+      .joins(:submitter)
+      .joins(:visits_ids)
+      .where('visits.created_at < ?', n.minutes.ago)
+      .destroy_all
   end
 
   def num_clicks
@@ -48,14 +52,19 @@ class ShortenedUrl < ApplicationRecord
   end
 
   def num_uniques
-    self.visits_ids.select(:visitor_id).distinct.count
+    self.visits_ids
+      .select(:visitor_id)
+      .distinct
+      .count
   end
 
   def num_recent_uniques
     # Visit.where({ created_at: 100.minutes.ago..Time.now })
-    self.visits_ids.where({
-        created_at: 10.minutes.ago..Time.now
-      }).select(:visitor_id).distinct.count
+    self.visits_ids
+      .select(:visitor_id)
+      .where('created_at > ?', 10.minutes.ago)
+      .distinct
+      .count
   end
 
   def no_spamming
