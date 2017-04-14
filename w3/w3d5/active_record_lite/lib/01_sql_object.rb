@@ -2,17 +2,9 @@ require_relative 'db_connection'
 require 'active_support/inflector'
 # NB: the attr_accessor we wrote in phase 0 is NOT used in the rest
 # of this project. It was only a warm up.
-#
-# ActiveSupport::Inflector.inflections do |inflect|
-#   inflect.irregular 'human', 'humans'
-# end
 
 class SQLObject
-
-  def self.method_missing(name, *args)
-    ActiveSupport::Inflector.send(name, *args)
-  end
-
+  
   def self.columns
     unless @columns
       table = self.table_name
@@ -45,7 +37,7 @@ class SQLObject
   end
 
   def self.table_name
-    @table_name ||= tableize(self.name)
+    @table_name ||= ActiveSupport::Inflector.tableize(self.name)
   end
 
   def self.all
