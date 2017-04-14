@@ -4,7 +4,7 @@ require 'active_support/inflector'
 # of this project. It was only a warm up.
 
 class SQLObject
-  
+
   def self.columns
     unless @columns
       table = self.table_name

@@ -1,3 +1,4 @@
+require 'byebug'
 require '03_associatable'
 
 describe 'AssocOptions' do
@@ -65,7 +66,7 @@ describe 'AssocOptions' do
       options = HasManyOptions.new('cats', 'Human')
       expect(options.model_class).to eq(Cat)
     end
-    
+
     it '#table_name returns table name of associated object' do
       options = BelongsToOptions.new('human')
       expect(options.table_name).to eq('humans')
@@ -134,9 +135,9 @@ describe 'Associatable' do
     let(:ned_house) { House.find(2) }
 
     it 'fetches `cats` from `Human`' do
+      # debugger
       expect(ned).to respond_to(:cats)
       cats = ned.cats
-
       expect(cats.length).to eq(2)
 
       expected_cat_names = %w(Haskell Markov)
