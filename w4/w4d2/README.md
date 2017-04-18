@@ -50,7 +50,6 @@ Below HTML gives the user a calendar that lets them select the date.
 
 ```html
 <form action="<%= books_url %>" method="post">
-...  
 </form>
 ```
 

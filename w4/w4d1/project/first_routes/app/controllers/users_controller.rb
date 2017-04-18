@@ -1,11 +1,11 @@
 class UsersController < ApplicationController
   def index
     if params[:id]
-      redirect_to action: 'show', id: params[:id]
+      redirect_to user_url(id: params[:id])
     elsif params[:username]
       user = User.find_by(username: params[:username])
       user_id = user.id
-      redirect_to action: 'show', id: user_id
+      redirect_to user_url(id: user_id)
     else
       @users = User.all
       render json: @users

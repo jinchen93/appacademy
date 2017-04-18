@@ -6,53 +6,53 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-# User.destroy_all
-# u1 = User.create(username: 'Jin')
-# u2 = User.create(username: 'Al')
-# u3 = User.create(username: 'Bob')
-#
-# a1 = Artwork.create(
-#   title: 'A1 Sauce',
-#   image_url: 'www.imgur/a1.jpg',
-#   artist_id: u2.id
-# )
-#
-# a2 = Artwork.create(
-#   title: 'A Day in the Life of an App Academy Student',
-#   image_url: 'www.imgur.com/aastudent.jpg',
-#   artist_id: u1.id
-# )
-#
-# a3 = Artwork.create(
-#   title: 'Bobs Burgers',
-#   image_url: 'www.bobsburger.com/tasty.jpg',
-#   artist_id: u3.id
-# )
-#
-# s1 = ArtworkShare.create(
-#   viewer_id: u1.id,
-#   artwork_id: a1.id
-# )
-#
-# s2 = ArtworkShare.create(
-#   viewer_id: u1.id,
-#   artwork_id: a2.id
-# )
-#
-# s3 = ArtworkShare.create(
-#   viewer_id: u2.id,
-#   artwork_id: a1.id
-# )
-#
-# s4 = ArtworkShare.create(
-#   viewer_id: u2.id,
-#   artwork_id: a3.id
-# )
-#
-# s5 = ArtworkShare.create(
-#   viewer_id: u3.id,
-#   artwork_id: a3.id
-# )
+User.destroy_all
+u1 = User.create(username: 'Jin')
+u2 = User.create(username: 'Al')
+u3 = User.create(username: 'Bob')
+
+a1 = Artwork.create(
+  title: 'A1 Sauce',
+  image_url: 'www.imgur/a1.jpg',
+  artist_id: u2.id
+)
+
+a2 = Artwork.create(
+  title: 'A Day in the Life of an App Academy Student',
+  image_url: 'www.imgur.com/aastudent.jpg',
+  artist_id: u1.id
+)
+
+a3 = Artwork.create(
+  title: 'Bobs Burgers',
+  image_url: 'www.bobsburger.com/tasty.jpg',
+  artist_id: u3.id
+)
+
+s1 = ArtworkShare.create(
+  viewer_id: u1.id,
+  artwork_id: a1.id
+)
+
+s2 = ArtworkShare.create(
+  viewer_id: u1.id,
+  artwork_id: a2.id
+)
+
+s3 = ArtworkShare.create(
+  viewer_id: u2.id,
+  artwork_id: a1.id
+)
+
+s4 = ArtworkShare.create(
+  viewer_id: u2.id,
+  artwork_id: a3.id
+)
+
+s5 = ArtworkShare.create(
+  viewer_id: u3.id,
+  artwork_id: a3.id
+)
 
 c1 = Comment.create(
   author_id: 11,
