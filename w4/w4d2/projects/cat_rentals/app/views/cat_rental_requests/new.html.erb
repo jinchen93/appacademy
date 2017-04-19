@@ -1,0 +1,25 @@
+<h3>Request a new cat rental</h3>
+
+<form action="<%= cat_rental_requests_url %>" method="post">
+
+  <label for="cats">Cats</label>
+  <select id="cats"  name="rental[cat_id]">
+    <% @cats.each do |cat| %>
+      <option <%= "selected" if params[:rented_cat] == cat.id.to_s %> value="<%= cat.id %>"><%= cat.name %></option>
+    <% end %>
+  </select>
+
+  <br>
+
+  <label for="start_date">Start Date</label>
+  <input type="date" name="rental[start_date]">
+
+  <br>
+
+  <label for="end_date">End Date</label>
+  <input type="date" name="rental[end_date]">
+
+  <br>
+
+  <input type="submit" name="submit" value="Rent cat">
+</form>

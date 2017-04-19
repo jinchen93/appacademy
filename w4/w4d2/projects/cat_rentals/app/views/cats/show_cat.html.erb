@@ -1,0 +1,22 @@
+<h3> <%= @cat.name %> </h3>
+
+<h5> Date of Birth: <%= @cat.birth_date %> </h5>
+<h5> Sex: <%= @cat.sex %> </h5>
+<h5> Color: <%= @cat.color %> </h5>
+<h5> Description: <%= @cat.description %> </h5>
+
+<h3>Busy during these days:</h3>
+<ul>
+  <% @cat.rental_requests.each do |request| %>
+    <li> <%= request.start_date %> - <%= request.end_date %> - <%= request.status %>
+      <% if request.status == "PENDING" %>
+        <%= button_to 'Approve', approve_request_url(request), method: :get %>
+        <%= button_to 'Deny', deny_request_url(request), method: :get %>
+      <% end %>
+    </li>
+  <% end %>
+</ul>
+<br>
+<%= link_to "Request a rental for #{@cat.name}", new_cat_rental_request_url(rented_cat: @cat.id) %>
+<br>
+<%= link_to "List all Cats", cats_url %>
