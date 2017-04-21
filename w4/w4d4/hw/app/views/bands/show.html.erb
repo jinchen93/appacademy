@@ -1,0 +1,12 @@
+<h1> <%= @band.name %> </h1>
+
+<h3>Albums:</h3>
+<ul>
+  <%= render @albums %>
+</ul>
+
+<%= button_to "Add Album", new_band_album_url(@band), method: 'get' %>
+<br>
+<%= button_to "Edit Band", edit_band_url(@band), method: 'get' %>
+<br>
+<%= button_to "Delete Band", band_url(@band), method: 'delete' %>

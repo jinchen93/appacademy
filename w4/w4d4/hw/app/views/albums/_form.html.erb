@@ -1,0 +1,40 @@
+<% action == :edit ? action_url = album_url(album) : action_url = albums_path %>
+
+<form action="<%= action_url %>" method="post">
+  <%= auth_token %>
+  <% if action == :edit %>
+    <input type="hidden" name="_method" value="patch">
+  <% end %>
+  <label for="name">Name</label>
+  <input id="name"
+    type="text"
+    name="album[name]"
+    value="<%= album.name if action == :edit%>">
+  <br>
+
+  <label for="band">Band</label>
+  <select id="band" name="album[band_id]">
+    <% all_bands.each do |band| %>
+      <option
+        value="<%= band.id %>"
+        <%= "selected" if action == :edit && album.band == band.name %> >
+      <%= band.name %>
+      </option>
+    <% end %>
+  </select>
+
+  <br>
+  <label for="Live">Live</label>
+  <input
+    <%= "checked" if action == :edit && album.category == "Live" %>
+    id="Live" type="radio" name="album[category]" value="Live">
+
+  <label for="Studio">Studio</label>
+  <input
+    <%= "checked" if action == :edit && album.category == "Live" %>
+    id="Studio" type="radio" name="album[category]" value="Studio">
+
+  <br>
+
+  <input type="submit">
+</form>

@@ -1,0 +1,10 @@
+<!-- An Album contains many Tracks.
+Have a drop-down to select which Band recorded the Album. Use selected to default-select the appropriate Band in the drop-down.
+
+Use radio buttons to select whether the album is a live or studio album.
+
+Use checked to default select the appropriate value. -->
+
+<h1>New <%= @band.name %> Album! </h1>
+
+<%= render 'form', band: @band, all_bands: @all_bands, action: :new %>
