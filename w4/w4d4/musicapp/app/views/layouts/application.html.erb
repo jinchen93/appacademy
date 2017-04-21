@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Musicapp</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all' %>
+    <%= javascript_include_tag 'application' %>
+  </head>
+
+
+
+  <body>
+
+    <% if flash[:errors] %>
+      <% flash[:errors].each do |error| %>
+        <%= error %>
+        <br>
+      <% end %>
+    <% end %>
+
+    <%= link_to "Return to Main Page", bands_url%>
+    <% if current_user %>
+      <h3>Hi, <%= current_user.email %> </h3>
+      <%= button_to "Log Out", sessions_url, method: 'delete'  %>
+    <% else %>
+      <%= button_to "Log In", new_sessions_url, method: 'get' %>
+      <%= button_to "Sign Up", new_user_url, method: 'get' %>
+    <% end %>
+    <%= yield %>
+  </body>
+</html>
