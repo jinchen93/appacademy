@@ -1,0 +1,7 @@
+<h1>Edit <%= @sub.title %></h1>
+
+<%= render 'form',
+  action_url: sub_url(@sub.title),
+  sub: @sub,
+  action: :edit,
+  old_title: @sub.title %>

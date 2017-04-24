@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Reddit</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <% if current_user %>
+      <h3>Hi <%= current_user.username %></h3>
+      <br>
+      <%= button_to 'Logout', session_url, method: :delete %>
+    <% else %>
+      <%= button_to 'Login', new_session_url, method: :get %>
+      <%= button_to 'Signup', new_user_url, method: :get %>
+    <% end %>
+
+    <% if flash[:errors] %>
+      <ul>
+        <% flash[:errors].each do |error| %>
+          <li class="error"><%= error %></li>
+        <% end %>
+      </ul>
+    <% end %>
+    <%= link_to 'Back to Main Page', root_url %>
+    <div class="container">
+      <% if signed_in? %>
+        <%= button_to 'Create Post', new_post_url, method: :get %>
+        <%= button_to 'Create Subreddit', new_sub_url, method: :get %>
+      <% end %>
+      <%= yield %>
+    </div>
+  </body>
+</html>

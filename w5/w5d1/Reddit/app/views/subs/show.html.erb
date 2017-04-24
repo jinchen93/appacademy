@@ -1,0 +1,14 @@
+<h1>/r/<%= @sub.title %></h1>
+<% if moderator?  %>
+  <%= button_to 'Edit Subreddit', edit_sub_url(@sub.title), method: :get %>
+<% end %>
+<br>
+<h3>Description: </h3>
+<%= @sub.description %>
+
+<h3>Posts: </h3>
+<ul>
+  <% @sub.posts.each do |post| %>
+  <li><%= link_to post.title, post_url(post.id) %></li>
+  <% end %>
+</ul>
