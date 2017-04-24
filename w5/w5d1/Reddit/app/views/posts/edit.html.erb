@@ -1,0 +1,8 @@
+<h1>Edit Post</h1>
+
+<%= render 'form',
+  action_url: post_url(@post.id),
+  action: :edit,
+  post: @post,
+  sub_ids: @post.sub_ids
+%>

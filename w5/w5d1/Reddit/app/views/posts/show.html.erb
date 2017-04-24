@@ -1,6 +1,10 @@
 <h1><%= link_to @post.title, @post.url %></h1>
 By: <%= @post.author.username %>
+
 <br>
+<br>
+
+<%= button_to 'Edit Post', edit_post_url, method: :get if author? %>
 
 <p class="post-content">
   <%= @post.content %>

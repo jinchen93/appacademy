@@ -15,12 +15,12 @@
 
   <label>
     URL:
-    <br>
     <input type="text" name="post[url]" value="<%= post.url %>">
   </label>
 
   <br>
-
+  <br>
+  
   <label>
     Content:
     <br>
@@ -28,7 +28,23 @@
     </textarea>
   </label>
 
+  <br>
 
-
+  <input type="hidden" name="post[sub_ids][]">
+  <% Sub.all.each do |sub| %>
+    <br>
+    <br>
+    <input
+      id="sub<%= sub.id %>"
+      type="checkbox"
+      name="post[sub_ids][]"
+      value="<%= sub.id %>"
+      <%= "checked" if sub_ids.include?(sub.id) %>>
+    <label for ="sub<%= sub.id %>">
+      <%= sub.title %>
+    </label>
+  <% end %>
+  <br>
+  <br>
   <input type="submit" value="Submit">
 </form>
