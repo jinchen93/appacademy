@@ -2,7 +2,7 @@
   <div class="comment">
     <%= child.content %>
     <%= button_to 'Reply to this Comment',
-      comment_url(child.id), method: :get  %>
+      comment_url(child.id), method: :get  if signed_in? %>
     <%= render 'comment', children: child.children %>
   </div>
 <% end %>
