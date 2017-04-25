@@ -44,6 +44,6 @@ app = Proc.new do |env|
 end
 
 Rack::Server.start(
- app: app,
- Port: 3000
+  app: app,
+  Port: 3000
 )
