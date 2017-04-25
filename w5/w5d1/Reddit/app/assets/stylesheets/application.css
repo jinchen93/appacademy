@@ -19,8 +19,11 @@ html {
 }
 
 li {
-  padding-top: 10px;
+  height: 3em;
+  padding-top: 5px;
   list-style-type: none;
+  border: 1px dashed black;
+  padding-left: 10px;
 }
 
 a {
@@ -32,13 +35,11 @@ a:visited {
 }
 
 .container {
-  border: 1px solid black;
-  margin: 10% 10%;
-  padding: 5% 5%;
+  margin: 5%;
 }
 
 .button_to {
-  height: 30px;
+  margin: 5px auto;
 }
 
 .error {
@@ -49,4 +50,17 @@ a:visited {
 .post-content {
   border: 1px dashed black;
   padding: 5px;
+}
+
+.comment-view {
+  margin: 20px auto;
+  border: 1px dashed black;
+  height: 50px;
+}
+
+.comment {
+  margin: 5%;
+  padding: 2%;
+  border-left: 1px dashed black;
+  border-top: 1px dashed black;
 }

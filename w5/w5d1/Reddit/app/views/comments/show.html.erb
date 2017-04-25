@@ -1,0 +1,14 @@
+<div class="comment-view">
+  <%= @comment.content %>
+</div>
+
+<h3>Add Comment:</h3>
+<form action="<%= comments_url %>" method="post">
+  <%= auth_token %>
+  <textarea name="comment[content]"></textarea>
+  <input type="hidden" name="comment[post_id]" value="<%= @comment.post.id %>">
+  <input type="hidden" name="comment[parent_comment_id]" value="<%= @comment.id %>">
+  <br>
+  <br>
+  <input type="submit">
+</form>

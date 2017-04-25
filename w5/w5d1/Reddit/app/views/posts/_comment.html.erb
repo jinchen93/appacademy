@@ -1,0 +1,8 @@
+<% children.each do |child| %>
+  <div class="comment">
+    <%= child.content %>
+    <%= button_to 'Reply to this Comment',
+      comment_url(child.id), method: :get  %>
+    <%= render 'comment', children: child.children %>
+  </div>
+<% end %>

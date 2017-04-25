@@ -1,0 +1,17 @@
+<h3><%= link_to @post.title, @post.url %></h3>
+By: <%= @post.author.username %>
+
+<p class="post-content">
+  <%= @post.content %>
+</p>
+
+
+<h3>New Comment:</h3>
+<form action="<%= comments_url %>" method="post">
+  <%= auth_token %>
+  <textarea name="comment[content]"></textarea>
+  <input type="hidden" name="comment[post_id]" value="<%= @post.id %>">
+  <br>
+  <br>
+  <input type="submit">
+</form>
