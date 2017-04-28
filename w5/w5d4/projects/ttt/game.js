@@ -57,44 +57,61 @@ class Game {
   checkWinner() {
     if (this.rowWinner() || this.colWinner() || this.diagWinner()) {
       console.log(`CONGRATS!! ${this.currentPlayer.name} is the winner!`);
+      reader.close();
     } else if (this.board.full()) {
       console.log("Wow, what a couple of losers");
+      reader.close();
     } else {
       this.changePlayer();
     }
   }
 
-  same(element, index, array) {
-    return element === array[0];
+  isThreeOfAKind(arr) {
+    if (arr.some( val => val === ' ')) {
+      return false;
+    }
+
+    return arr.every( (ele, idx, array) => {
+      return ele === array[0];
+    });
   }
 
   rowWinner() {
+    let player = null;
+
     this.board.grid.forEach( row => {
-      if (row.every(this.same)) {
-        return this.currentPlayer;
+      if (this.isThreeOfAKind(row)) {
+        player = this.currentPlayer;
       }
     });
-    return undefined;
+
+    return player;
   }
 
   colWinner() {
+    let player = null;
     let colboard = this.board.transposedGrid();
+
     colboard.forEach( col => {
-      if (col.every(this.same)) {
-        return this.currentPlayer;
+      if (this.isThreeOfAKind(col)) {
+        player = this.currentPlayer;
       }
     });
-    return undefined;
+
+    return player;
   }
 
   diagWinner() {
+    let player = null;
+
     let diags = this.board.diagonalGrid();
-    diags.forEach( col => {
-      if (col.every(this.same)) {
-        return this.currentPlayer;
+    diags.forEach( diag => {
+      if (this.isThreeOfAKind(diag)) {
+        player = this.currentPlayer;
       }
     });
-    return undefined;
+
+    return player;
   }
 
   changePlayer() {
