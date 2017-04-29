@@ -1,5 +1,6 @@
-const Util = require("./utils.js");
-const MovingObject = require("./moving_object.js");
+const Utils = require("./Utils");
+const MovingObject = require("./moving_object");
+const Ship = require('./ship');
 
 const DEFAULTS  = {
   color: 'gray',
@@ -9,10 +10,16 @@ const DEFAULTS  = {
 function Asteroid(params) {
   params.color = DEFAULTS.color;
   params.radius = DEFAULTS.radius;
-  params.vel = Util.randomVec(3);
+  params.vel = Utils.randomVec(3);
   MovingObject.call(this, params);
 }
 
-Util.inherits(Asteroid, MovingObject);
+Utils.inherits(Asteroid, MovingObject);
+
+Asteroid.prototype.collideWith = function(otherObject) {
+  if (otherObject instanceof Ship) {
+    otherObject.relocate();
+  }
+};
 
 module.exports = Asteroid;

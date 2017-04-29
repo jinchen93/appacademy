@@ -1,4 +1,4 @@
-const Util = require('./utils.js');
+const Utils = require('./Utils');
 
 function MovingObject(params) {
   this.pos = params.pos;
@@ -23,14 +23,14 @@ MovingObject.prototype.draw = function(ctx) {
 };
 
 
-MovingObject.prototype.collideWith = function(otherObject) {
-  this.game.remove(otherObject);
-  this.game.remove(this);
-};
+// MovingObject.prototype.collideWith = function(otherObject) {
+//   this.game.remove(otherObject);
+//   this.game.remove(this);
+// };
 
 MovingObject.prototype.isCollideWith = function(otherObject) {
   let radiusSum = this.radius + otherObject.radius;
-  let distance =  Util.distance(this.pos, otherObject.pos);
+  let distance =  Utils.distance(this.pos, otherObject.pos);
   return distance < radiusSum - radiusSum / 5;
 };
 

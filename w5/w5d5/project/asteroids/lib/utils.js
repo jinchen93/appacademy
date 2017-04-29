@@ -1,4 +1,4 @@
-const Util = {
+const Utils = {
   inherits (childClass, parentClass) {
     childClass.prototype = Object.create(parentClass.prototype);
     childClass.prototype.constructor = childClass;
@@ -24,4 +24,4 @@ const Util = {
 
 };
 
-module.exports = Util;
+module.exports = Utils;

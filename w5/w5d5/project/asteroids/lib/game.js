@@ -1,13 +1,15 @@
-const MovingObject = require("./moving_object.js");
-const Util = require("./utils.js");
-const Asteroid = require("./asteroid.js");
+const MovingObject = require("./moving_object");
+const Utils = require("./Utils");
+const Asteroid = require("./asteroid");
+const Ship = require('./ship');
 
 function Game() {
-  this.DIM_X = Util.width;
-  this.DIM_Y = Util.height;
+  this.DIM_X = Utils.width;
+  this.DIM_Y = Utils.height;
   this.NUM_ASTEROIDS = 13;
   this.asteroids = [];
   this.addAsteroids();
+  this.addShip();
 }
 
 Game.prototype.defaultAsteroid = function() {
@@ -23,15 +25,28 @@ Game.prototype.addAsteroids = function() {
   }
 };
 
+Game.prototype.addShip = function() {
+  this.ship = new Ship({
+    pos: this.randomPosition(),
+    game: this
+  });
+};
+
+Game.prototype.allObjects = function() {
+  const allObjs = this.asteroids.map(val => val);
+  allObjs.push(this.ship);
+  return allObjs;
+};
+
 Game.prototype.checkCollisions = function() {
-  const asteroids = this.asteroids;
-  for (let i = 0; i < asteroids.length; i++) {
-    for (let j = 0; j < asteroids.length; j++) {
+  const allObjs = this.allObjects();
+  for (let i = 0; i < allObjs.length; i++) {
+    for (let j = 0; j < allObjs.length; j++) {
       if (i !== j) {
-        const ast1 = asteroids[i];
-        const ast2 = asteroids[j];
-        if (ast1.isCollideWith(ast2)) {
-          ast1.collideWith(ast2);
+        const obj1 = allObjs[i];
+        const obj2 = allObjs[j];
+        if (obj1.isCollideWith(obj2)) {
+          obj1.collideWith(obj2);
         }
       }
     }
@@ -40,14 +55,16 @@ Game.prototype.checkCollisions = function() {
 
 Game.prototype.draw = function(ctx) {
   ctx.clearRect(0, 0, this.DIM_X, this.DIM_Y);
-  for (let i = 0; i < this.asteroids.length; i++) {
-    this.asteroids[i].draw(ctx);
+  const allObjs = this.allObjects();
+  for (let i = 0; i < allObjs.length; i++) {
+    allObjs[i].draw(ctx);
   }
 };
 
 Game.prototype.moveObjects = function() {
-  for (let i = 0; i < this.asteroids.length; i++) {
-    this.asteroids[i].move();
+  const allObjs = this.allObjects();
+  for (let i = 0; i < allObjs.length; i++) {
+    allObjs[i].move();
   }
 };
 

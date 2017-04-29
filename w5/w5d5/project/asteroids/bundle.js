@@ -70,7 +70,7 @@
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Util = __webpack_require__(1);
+const Utils = __webpack_require__(5);
 
 function MovingObject(params) {
   this.pos = params.pos;
@@ -95,14 +95,14 @@ MovingObject.prototype.draw = function(ctx) {
 };
 
 
-MovingObject.prototype.collideWith = function(otherObject) {
-  this.game.remove(otherObject);
-  this.game.remove(this);
-};
+// MovingObject.prototype.collideWith = function(otherObject) {
+//   this.game.remove(otherObject);
+//   this.game.remove(this);
+// };
 
 MovingObject.prototype.isCollideWith = function(otherObject) {
   let radiusSum = this.radius + otherObject.radius;
-  let distance =  Util.distance(this.pos, otherObject.pos);
+  let distance =  Utils.distance(this.pos, otherObject.pos);
   return distance < radiusSum - radiusSum / 5;
 };
 
@@ -116,52 +116,22 @@ module.exports = MovingObject;
 
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-const Util = {
-  inherits (childClass, parentClass) {
-    childClass.prototype = Object.create(parentClass.prototype);
-    childClass.prototype.constructor = childClass;
-  },
-
-  randomVec (length) {
-    const deg = 2 * Math.PI * Math.random();
-    return this.scale([Math.sin(deg), Math.cos(deg)], length);
-  },
-
-  scale (vec, m) {
-    return [vec[0] * m, vec[1] * m];
-  },
-
-  distance (pos1, pos2) {
-    let xSquared = Math.pow(pos1[0] - pos2[0], 2);
-    let ySquared = Math.pow(pos1[1] - pos2[1], 2);
-    return Math.sqrt(xSquared + ySquared);
-  },
-
-  width: window.innerWidth - 20,
-  height: window.innerHeight - 20
-
-};
-
-module.exports = Util;
-
-
-/***/ }),
+/* 1 */,
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const MovingObject = __webpack_require__(0);
-const Util = __webpack_require__(1);
+const Utils = __webpack_require__(5);
 const Asteroid = __webpack_require__(3);
+const Ship = __webpack_require__(6);
 
 function Game() {
-  this.DIM_X = Util.width;
-  this.DIM_Y = Util.height;
+  this.DIM_X = Utils.width;
+  this.DIM_Y = Utils.height;
   this.NUM_ASTEROIDS = 13;
   this.asteroids = [];
   this.addAsteroids();
+  this.addShip();
 }
 
 Game.prototype.defaultAsteroid = function() {
@@ -177,15 +147,28 @@ Game.prototype.addAsteroids = function() {
   }
 };
 
+Game.prototype.addShip = function() {
+  this.ship = new Ship({
+    pos: this.randomPosition(),
+    game: this
+  });
+};
+
+Game.prototype.allObjects = function() {
+  const allObjs = this.asteroids.map(val => val);
+  allObjs.push(this.ship);
+  return allObjs;
+};
+
 Game.prototype.checkCollisions = function() {
-  const asteroids = this.asteroids;
-  for (let i = 0; i < asteroids.length; i++) {
-    for (let j = 0; j < asteroids.length; j++) {
+  const allObjs = this.allObjects();
+  for (let i = 0; i < allObjs.length; i++) {
+    for (let j = 0; j < allObjs.length; j++) {
       if (i !== j) {
-        const ast1 = asteroids[i];
-        const ast2 = asteroids[j];
-        if (ast1.isCollideWith(ast2)) {
-          ast1.collideWith(ast2);
+        const obj1 = allObjs[i];
+        const obj2 = allObjs[j];
+        if (obj1.isCollideWith(obj2)) {
+          obj1.collideWith(obj2);
         }
       }
     }
@@ -194,14 +177,16 @@ Game.prototype.checkCollisions = function() {
 
 Game.prototype.draw = function(ctx) {
   ctx.clearRect(0, 0, this.DIM_X, this.DIM_Y);
-  for (let i = 0; i < this.asteroids.length; i++) {
-    this.asteroids[i].draw(ctx);
+  const allObjs = this.allObjects();
+  for (let i = 0; i < allObjs.length; i++) {
+    allObjs[i].draw(ctx);
   }
 };
 
 Game.prototype.moveObjects = function() {
-  for (let i = 0; i < this.asteroids.length; i++) {
-    this.asteroids[i].move();
+  const allObjs = this.allObjects();
+  for (let i = 0; i < allObjs.length; i++) {
+    allObjs[i].move();
   }
 };
 
@@ -257,8 +242,9 @@ module.exports = Game;
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Util = __webpack_require__(1);
+const Utils = __webpack_require__(5);
 const MovingObject = __webpack_require__(0);
+const Ship = __webpack_require__(6);
 
 const DEFAULTS  = {
   color: 'gray',
@@ -268,11 +254,17 @@ const DEFAULTS  = {
 function Asteroid(params) {
   params.color = DEFAULTS.color;
   params.radius = DEFAULTS.radius;
-  params.vel = Util.randomVec(3);
+  params.vel = Utils.randomVec(3);
   MovingObject.call(this, params);
 }
 
-Util.inherits(Asteroid, MovingObject);
+Utils.inherits(Asteroid, MovingObject);
+
+Asteroid.prototype.collideWith = function(otherObject) {
+  if (otherObject instanceof Ship) {
+    otherObject.relocate();
+  }
+};
 
 module.exports = Asteroid;
 
@@ -282,7 +274,7 @@ module.exports = Asteroid;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Game = __webpack_require__(2);
-const Util = __webpack_require__(1);
+const Utils = __webpack_require__(5);
 
 function GameView(ctx) {
   this.ctx = ctx;
@@ -298,13 +290,75 @@ GameView.prototype.start = function(ctx) {
 
 document.addEventListener('DOMContentLoaded', () => {
   const canvasEl = document.getElementsByTagName("canvas")[0];
-  canvasEl.height = Util.height;
-  canvasEl.width = Util.width;
+  canvasEl.height = Utils.height;
+  canvasEl.width = Utils.width;
   const ctx = canvasEl.getContext("2d");
 
   window.game = new GameView(ctx);
   window.game.start(ctx);
 });
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+const Utils = {
+  inherits (childClass, parentClass) {
+    childClass.prototype = Object.create(parentClass.prototype);
+    childClass.prototype.constructor = childClass;
+  },
+
+  randomVec (length) {
+    const deg = 2 * Math.PI * Math.random();
+    return this.scale([Math.sin(deg), Math.cos(deg)], length);
+  },
+
+  scale (vec, m) {
+    return [vec[0] * m, vec[1] * m];
+  },
+
+  distance (pos1, pos2) {
+    let xSquared = Math.pow(pos1[0] - pos2[0], 2);
+    let ySquared = Math.pow(pos1[1] - pos2[1], 2);
+    return Math.sqrt(xSquared + ySquared);
+  },
+
+  width: window.innerWidth - 20,
+  height: window.innerHeight - 20
+
+};
+
+module.exports = Utils;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const MovingObject = __webpack_require__(0);
+const Utils = __webpack_require__(5);
+
+const DEFAULT = {
+  color: 'green',
+  radius: 10,
+  vel: [0,0]
+};
+
+function Ship(params) {
+  params.color = DEFAULT.color;
+  params.radius = DEFAULT.radius;
+  params.vel = DEFAULT.vel;
+  MovingObject.call(this, params);
+}
+
+Utils.inherits(Ship, MovingObject);
+
+Ship.prototype.relocate = function() {
+  this.pos = this.game.randomPosition();
+};
+
+module.exports = Ship;
 
 
 /***/ })

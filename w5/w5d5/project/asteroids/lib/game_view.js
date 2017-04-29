@@ -1,5 +1,5 @@
-const Game = require('./game.js');
-const Util = require('./utils.js');
+const Game = require('./game');
+const Utils = require('./Utils');
 
 function GameView(ctx) {
   this.ctx = ctx;
@@ -15,8 +15,8 @@ GameView.prototype.start = function(ctx) {
 
 document.addEventListener('DOMContentLoaded', () => {
   const canvasEl = document.getElementsByTagName("canvas")[0];
-  canvasEl.height = Util.height;
-  canvasEl.width = Util.width;
+  canvasEl.height = Utils.height;
+  canvasEl.width = Utils.width;
   const ctx = canvasEl.getContext("2d");
 
   window.game = new GameView(ctx);
