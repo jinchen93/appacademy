@@ -5,7 +5,7 @@ const Asteroid = require("./asteroid.js");
 function Game() {
   this.DIM_X = Util.width;
   this.DIM_Y = Util.height;
-  this.NUM_ASTEROIDS = 5;
+  this.NUM_ASTEROIDS = 13;
   this.asteroids = [];
   this.addAsteroids();
 }
@@ -31,13 +31,7 @@ Game.prototype.checkCollisions = function() {
         const ast1 = asteroids[i];
         const ast2 = asteroids[j];
         if (ast1.isCollideWith(ast2)) {
-          let distance =  Util.distance(ast1.pos, ast2.pos);
-          alert(
-          `COLLISION \n
-          pos1: ${ast1.pos} \n
-          pos2: ${ast2.pos} \n
-          distance: ${distance}`
-          );
+          ast1.collideWith(ast2);
         }
       }
     }
@@ -67,6 +61,16 @@ Game.prototype.randomPosition = function() {
     this.DIM_X * Math.random(),
     this.DIM_Y * Math.random()
   ];
+};
+
+Game.prototype.remove = function(astRemove) {
+  let newAsteroids = [];
+  this.asteroids.forEach(asteroid2 => {
+    if (astRemove !== asteroid2) {
+      newAsteroids.push(asteroid2);
+    }
+  });
+  this.asteroids = newAsteroids;
 };
 
 Game.prototype.wrap = function(pos) {

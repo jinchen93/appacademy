@@ -22,16 +22,22 @@ MovingObject.prototype.draw = function(ctx) {
   ctx.fill();
 };
 
-MovingObject.prototype.move = function() {
-  let wrappedPos = this.game.wrap(this.pos);
-  this.pos[0] = wrappedPos[0] + this.vel[0];
-  this.pos[1] = wrappedPos[1] + this.vel[1];
+
+MovingObject.prototype.collideWith = function(otherObject) {
+  this.game.remove(otherObject);
+  this.game.remove(this);
 };
 
 MovingObject.prototype.isCollideWith = function(otherObject) {
   let radiusSum = this.radius + otherObject.radius;
   let distance =  Util.distance(this.pos, otherObject.pos);
-  return distance < radiusSum;
+  return distance < radiusSum - radiusSum / 5;
+};
+
+MovingObject.prototype.move = function() {
+  let wrappedPos = this.game.wrap(this.pos);
+  this.pos[0] = wrappedPos[0] + this.vel[0];
+  this.pos[1] = wrappedPos[1] + this.vel[1];
 };
 
 module.exports = MovingObject;

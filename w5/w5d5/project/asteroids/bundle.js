@@ -94,16 +94,22 @@ MovingObject.prototype.draw = function(ctx) {
   ctx.fill();
 };
 
-MovingObject.prototype.move = function() {
-  let wrappedPos = this.game.wrap(this.pos);
-  this.pos[0] = wrappedPos[0] + this.vel[0];
-  this.pos[1] = wrappedPos[1] + this.vel[1];
+
+MovingObject.prototype.collideWith = function(otherObject) {
+  this.game.remove(otherObject);
+  this.game.remove(this);
 };
 
 MovingObject.prototype.isCollideWith = function(otherObject) {
   let radiusSum = this.radius + otherObject.radius;
   let distance =  Util.distance(this.pos, otherObject.pos);
-  return distance < radiusSum;
+  return distance < radiusSum - radiusSum / 5;
+};
+
+MovingObject.prototype.move = function() {
+  let wrappedPos = this.game.wrap(this.pos);
+  this.pos[0] = wrappedPos[0] + this.vel[0];
+  this.pos[1] = wrappedPos[1] + this.vel[1];
 };
 
 module.exports = MovingObject;
@@ -153,7 +159,7 @@ const Asteroid = __webpack_require__(3);
 function Game() {
   this.DIM_X = Util.width;
   this.DIM_Y = Util.height;
-  this.NUM_ASTEROIDS = 5;
+  this.NUM_ASTEROIDS = 13;
   this.asteroids = [];
   this.addAsteroids();
 }
@@ -179,13 +185,7 @@ Game.prototype.checkCollisions = function() {
         const ast1 = asteroids[i];
         const ast2 = asteroids[j];
         if (ast1.isCollideWith(ast2)) {
-          let distance =  Util.distance(ast1.pos, ast2.pos);
-          alert(
-          `COLLISION \n
-          pos1: ${ast1.pos} \n
-          pos2: ${ast2.pos} \n
-          distance: ${distance}`
-          );
+          ast1.collideWith(ast2);
         }
       }
     }
@@ -215,6 +215,16 @@ Game.prototype.randomPosition = function() {
     this.DIM_X * Math.random(),
     this.DIM_Y * Math.random()
   ];
+};
+
+Game.prototype.remove = function(astRemove) {
+  let newAsteroids = [];
+  this.asteroids.forEach(asteroid2 => {
+    if (astRemove !== asteroid2) {
+      newAsteroids.push(asteroid2);
+    }
+  });
+  this.asteroids = newAsteroids;
 };
 
 Game.prototype.wrap = function(pos) {
