@@ -1,4 +1,4 @@
-const Utils = require('./Utils');
+const Utils = require('./utils');
 
 function MovingObject(params) {
   this.pos = params.pos;

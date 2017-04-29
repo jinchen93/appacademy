@@ -5,5 +5,8 @@ module.exports = {
   output: {
     filename: 'bundle.js'
   },
-  watch: true
+  watch: true,
+  externals: {
+    'keymaster': 'key'
+  }
 };

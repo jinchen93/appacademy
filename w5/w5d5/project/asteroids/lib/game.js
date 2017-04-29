@@ -1,7 +1,8 @@
 const MovingObject = require("./moving_object");
-const Utils = require("./Utils");
+const Utils = require("./utils");
 const Asteroid = require("./asteroid");
 const Ship = require('./ship');
+const Bullet = require('./bullet');
 
 function Game() {
   this.DIM_X = Utils.width;
@@ -10,6 +11,7 @@ function Game() {
   this.asteroids = [];
   this.addAsteroids();
   this.addShip();
+  this.bullets = [];
 }
 
 Game.prototype.defaultAsteroid = function() {
@@ -25,6 +27,10 @@ Game.prototype.addAsteroids = function() {
   }
 };
 
+Game.prototype.addBullet = function(bullet) {
+  this.bullets.push(bullet);
+};
+
 Game.prototype.addShip = function() {
   this.ship = new Ship({
     pos: this.randomPosition(),
@@ -33,8 +39,9 @@ Game.prototype.addShip = function() {
 };
 
 Game.prototype.allObjects = function() {
-  const allObjs = this.asteroids.map(val => val);
+  let allObjs = this.asteroids.map(val => val);
   allObjs.push(this.ship);
+  allObjs = allObjs.concat(this.bullets);
   return allObjs;
 };
 
@@ -42,10 +49,10 @@ Game.prototype.checkCollisions = function() {
   const allObjs = this.allObjects();
   for (let i = 0; i < allObjs.length; i++) {
     for (let j = 0; j < allObjs.length; j++) {
+      const obj1 = allObjs[i];
+      const obj2 = allObjs[j];
       if (i !== j) {
-        const obj1 = allObjs[i];
-        const obj2 = allObjs[j];
-        if (obj1.isCollideWith(obj2)) {
+        if (obj1.isCollideWith(obj2) && obj1 instanceof Asteroid) {
           obj1.collideWith(obj2);
         }
       }
@@ -80,7 +87,7 @@ Game.prototype.randomPosition = function() {
   ];
 };
 
-Game.prototype.remove = function(astRemove) {
+Game.prototype.astRemove = function(astRemove) {
   let newAsteroids = [];
   this.asteroids.forEach(asteroid2 => {
     if (astRemove !== asteroid2) {
@@ -88,6 +95,16 @@ Game.prototype.remove = function(astRemove) {
     }
   });
   this.asteroids = newAsteroids;
+};
+
+Game.prototype.bullRemove = function(bullet) {
+  let bullets = [];
+  this.bullets.forEach(bullet2 => {
+    if (bullet !== bullet2) {
+      bullets.push(bullet2);
+    }
+  });
+  this.bullets = bullets;
 };
 
 Game.prototype.wrap = function(pos) {
