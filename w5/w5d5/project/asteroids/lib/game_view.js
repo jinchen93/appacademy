@@ -1,4 +1,5 @@
 const Game = require('./game.js');
+const Util = require('./utils.js');
 
 function GameView(ctx) {
   this.ctx = ctx;
@@ -9,13 +10,15 @@ GameView.prototype.start = function(ctx) {
   setInterval(() => {
     this.game.moveObjects();
     this.game.draw(ctx);
-  }, 20);
+  }, 15);
 };
 
-const canvasEl = document.getElementsByTagName("canvas")[0];
-canvasEl.height = window.innerHeight;
-canvasEl.width = window.innerWidth;
-const ctx = canvasEl.getContext("2d");
+document.addEventListener('DOMContentLoaded', () => {
+  const canvasEl = document.getElementsByTagName("canvas")[0];
+  canvasEl.height = Util.height;
+  canvasEl.width = Util.width;
+  const ctx = canvasEl.getContext("2d");
 
-let game = new GameView(ctx);
-game.start(ctx);
+  window.game = new GameView(ctx);
+  window.game.start(ctx);
+});

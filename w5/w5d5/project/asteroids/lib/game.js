@@ -2,20 +2,25 @@ const MovingObject = require("./moving_object.js");
 const Util = require("./utils.js");
 const Asteroid = require("./asteroid.js");
 
-
-
 function Game() {
-  this.DIM_X = 500;
-  this.DIM_Y = 700;
+  this.DIM_X = Util.width;
+  this.DIM_Y = Util.height;
   this.NUM_ASTEROIDS = 17;
   this.asteroids = [];
   this.addAsteroids();
 }
 
+Game.prototype.defaultAsteroid = function() {
+  return {
+    pos: this.randomPosition(),
+    game: this
+  };
+};
+
 Game.prototype.addAsteroids = function() {
   for (let i = 0; i < this.NUM_ASTEROIDS; i++) {
     console.log(this.randomPosition());
-    this.asteroids.push(new Asteroid({pos: this.randomPosition()}));
+    this.asteroids.push(new Asteroid(this.defaultAsteroid()));
   }
 };
 
@@ -26,7 +31,7 @@ Game.prototype.randomPosition = function() {
 Game.prototype.draw = function(ctx) {
   ctx.clearRect(0, 0, this.DIM_X, this.DIM_Y);
   for (let i = 0; i < this.asteroids.length; i++) {
-    this.asteroids[i].draw();
+    this.asteroids[i].draw(ctx);
   }
 };
 
@@ -36,38 +41,27 @@ Game.prototype.moveObjects = function() {
   }
 };
 
-//
-// setInterval(() => {
-//   window.astertwo = new Asteroid({
-//     pos: [200,200]
-//   });
-//   window.astertwo.draw(ctx);
-//   window.astertwo.move();
-//   location.reload(true);
-//   window.astertwo.draw(ctx);
-//   window.astertwo.move();
-//   location.reload(true);
-//   window.astertwo.draw(ctx);
-//   window.astertwo.move();
-//   location.reload(true);
-//   window.astertwo.draw(ctx);
-//
-//
-//   window.aster = new Asteroid({
-//     pos: [500,500]
-//   });
-//   window.aster.draw(ctx);
-//   window.aster.move();
-//   location.reload(true);
-//   window.aster.draw(ctx);
-//   window.aster.move();
-//   location.reload(true);
-//   window.aster.draw(ctx);
-//   window.aster.move();
-//   location.reload(true);
-//   window.aster.draw(ctx);
-// }, 100);
+Game.prototype.wrap = function(pos) {
+  let x = pos[0];
+  let y = pos[1];
 
-// window.asteroid = new Asteroid();
+  if (x > this.DIM_X) {
+    return [0, y];
+  }
+
+  if (x < 0) {
+    return [this.DIM_X, y];
+  }
+
+  if (y > this.DIM_Y) {
+    return [x, 0];
+  }
+
+  if (y < 0) {
+    return [x, this.DIM_Y];
+  }
+
+  return pos;
+};
 
 module.exports = Game;

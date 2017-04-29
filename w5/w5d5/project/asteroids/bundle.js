@@ -6,9 +6,9 @@
 /******/ 	function __webpack_require__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-/******/
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
@@ -75,6 +75,7 @@ function MovingObject(params) {
   this.vel = params.vel;
   this.radius = params.radius;
   this.color = params.color;
+  this.game = params.game;
 }
 
 MovingObject.prototype.draw = function(ctx) {
@@ -93,8 +94,10 @@ MovingObject.prototype.draw = function(ctx) {
 
 
 MovingObject.prototype.move = function() {
-  this.pos[0] += this.vel[0];
-  this.pos[1] += this.vel[1];
+  let wrappedPos = this.game.wrap(this.pos);
+
+  this.pos[0] = wrappedPos[0] + this.vel[0];
+  this.pos[1] = wrappedPos[1] + this.vel[1];
 };
 
 module.exports = MovingObject;
@@ -108,7 +111,19 @@ const Util = {
   inherits: function(childClass, parentClass) {
     childClass.prototype = Object.create(parentClass.prototype);
     childClass.prototype.constructor = childClass;
-  }
+  },
+
+  randomVec: function(length) {
+    const deg = 2 * Math.PI * Math.random();
+    return this.scale([Math.sin(deg), Math.cos(deg)], length);
+  },
+
+  scale: function(vec, m) {
+    return [vec[0] * m, vec[1] * m];
+  },
+  
+  width: window.innerWidth - 20,
+  height: window.innerHeight - 20,
 };
 
 module.exports = Util;
@@ -122,20 +137,25 @@ const MovingObject = __webpack_require__(0);
 const Util = __webpack_require__(1);
 const Asteroid = __webpack_require__(3);
 
-
-
 function Game() {
-  this.DIM_X = 500;
-  this.DIM_Y = 700;
+  this.DIM_X = Util.width;
+  this.DIM_Y = Util.height;
   this.NUM_ASTEROIDS = 17;
   this.asteroids = [];
   this.addAsteroids();
 }
 
+Game.prototype.defaultAsteroid = function() {
+  return {
+    pos: this.randomPosition(),
+    game: this
+  };
+};
+
 Game.prototype.addAsteroids = function() {
   for (let i = 0; i < this.NUM_ASTEROIDS; i++) {
     console.log(this.randomPosition());
-    this.asteroids.push(new Asteroid({pos: this.randomPosition()}));
+    this.asteroids.push(new Asteroid(this.defaultAsteroid()));
   }
 };
 
@@ -146,7 +166,7 @@ Game.prototype.randomPosition = function() {
 Game.prototype.draw = function(ctx) {
   ctx.clearRect(0, 0, this.DIM_X, this.DIM_Y);
   for (let i = 0; i < this.asteroids.length; i++) {
-    this.asteroids[i].draw();
+    this.asteroids[i].draw(ctx);
   }
 };
 
@@ -156,39 +176,28 @@ Game.prototype.moveObjects = function() {
   }
 };
 
-//
-// setInterval(() => {
-//   window.astertwo = new Asteroid({
-//     pos: [200,200]
-//   });
-//   window.astertwo.draw(ctx);
-//   window.astertwo.move();
-//   location.reload(true);
-//   window.astertwo.draw(ctx);
-//   window.astertwo.move();
-//   location.reload(true);
-//   window.astertwo.draw(ctx);
-//   window.astertwo.move();
-//   location.reload(true);
-//   window.astertwo.draw(ctx);
-//
-//
-//   window.aster = new Asteroid({
-//     pos: [500,500]
-//   });
-//   window.aster.draw(ctx);
-//   window.aster.move();
-//   location.reload(true);
-//   window.aster.draw(ctx);
-//   window.aster.move();
-//   location.reload(true);
-//   window.aster.draw(ctx);
-//   window.aster.move();
-//   location.reload(true);
-//   window.aster.draw(ctx);
-// }, 100);
+Game.prototype.wrap = function(pos) {
+  let x = pos[0];
+  let y = pos[1];
 
-// window.asteroid = new Asteroid();
+  if (x > this.DIM_X) {
+    return [0, y];
+  }
+
+  if (x < 0) {
+    return [this.DIM_X, y];
+  }
+
+  if (y > this.DIM_Y) {
+    return [x, 0];
+  }
+
+  if (y < 0) {
+    return [x, this.DIM_Y];
+  }
+
+  return pos;
+};
 
 module.exports = Game;
 
@@ -200,27 +209,21 @@ module.exports = Game;
 const Util = __webpack_require__(1);
 const MovingObject = __webpack_require__(0);
 
-function Asteroid(params) {
-  this.color = 'yellow';
-  this.radius = 20;
-  this.pos = params.pos;
-  this.vel = randomVec(this.radius);
-}
+const DEFAULTS  = {
+  color: 'gray',
+  radius: 20
+};
 
+function Asteroid(params) {
+  params.color = DEFAULTS.color;
+  params.radius = DEFAULTS.radius;
+  params.vel = Util.randomVec(3);
+  MovingObject.call(this, params);
+}
 
 Util.inherits(Asteroid, MovingObject);
 
 module.exports = Asteroid;
-
-// Return a randomly oriented vector with the given length.
-function randomVec (length) {
-  const deg = 2 * Math.PI * Math.random();
-  return scale([Math.sin(deg), Math.cos(deg)], length);
-}
-// Scale the length of a vector by the given amount.
-function scale (vec, m) {
-  return [vec[0] * m, vec[1] * m];
-}
 
 
 /***/ }),
@@ -228,6 +231,7 @@ function scale (vec, m) {
 /***/ (function(module, exports, __webpack_require__) {
 
 const Game = __webpack_require__(2);
+const Util = __webpack_require__(1);
 
 function GameView(ctx) {
   this.ctx = ctx;
@@ -238,16 +242,18 @@ GameView.prototype.start = function(ctx) {
   setInterval(() => {
     this.game.moveObjects();
     this.game.draw(ctx);
-  }, 20);
+  }, 15);
 };
 
-const canvasEl = document.getElementsByTagName("canvas")[0];
-canvasEl.height = window.innerHeight;
-canvasEl.width = window.innerWidth;
-const ctx = canvasEl.getContext("2d");
+document.addEventListener('DOMContentLoaded', () => {
+  const canvasEl = document.getElementsByTagName("canvas")[0];
+  canvasEl.height = Util.height;
+  canvasEl.width = Util.width;
+  const ctx = canvasEl.getContext("2d");
 
-let game = new GameView(ctx);
-game.start(ctx);
+  window.game = new GameView(ctx);
+  window.game.start(ctx);
+});
 
 
 /***/ })
