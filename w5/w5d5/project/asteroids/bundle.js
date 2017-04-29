@@ -68,7 +68,9 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+const Util = __webpack_require__(1);
 
 function MovingObject(params) {
   this.pos = params.pos;
@@ -92,12 +94,16 @@ MovingObject.prototype.draw = function(ctx) {
   ctx.fill();
 };
 
-
 MovingObject.prototype.move = function() {
   let wrappedPos = this.game.wrap(this.pos);
-
   this.pos[0] = wrappedPos[0] + this.vel[0];
   this.pos[1] = wrappedPos[1] + this.vel[1];
+};
+
+MovingObject.prototype.isCollideWith = function(otherObject) {
+  let radiusSum = this.radius + otherObject.radius;
+  let distance =  Util.distance(this.pos, otherObject.pos);
+  return distance < radiusSum;
 };
 
 module.exports = MovingObject;
@@ -108,22 +114,29 @@ module.exports = MovingObject;
 /***/ (function(module, exports) {
 
 const Util = {
-  inherits: function(childClass, parentClass) {
+  inherits (childClass, parentClass) {
     childClass.prototype = Object.create(parentClass.prototype);
     childClass.prototype.constructor = childClass;
   },
 
-  randomVec: function(length) {
+  randomVec (length) {
     const deg = 2 * Math.PI * Math.random();
     return this.scale([Math.sin(deg), Math.cos(deg)], length);
   },
 
-  scale: function(vec, m) {
+  scale (vec, m) {
     return [vec[0] * m, vec[1] * m];
   },
-  
+
+  distance (pos1, pos2) {
+    let xSquared = Math.pow(pos1[0] - pos2[0], 2);
+    let ySquared = Math.pow(pos1[1] - pos2[1], 2);
+    return Math.sqrt(xSquared + ySquared);
+  },
+
   width: window.innerWidth - 20,
-  height: window.innerHeight - 20,
+  height: window.innerHeight - 20
+
 };
 
 module.exports = Util;
@@ -140,7 +153,7 @@ const Asteroid = __webpack_require__(3);
 function Game() {
   this.DIM_X = Util.width;
   this.DIM_Y = Util.height;
-  this.NUM_ASTEROIDS = 17;
+  this.NUM_ASTEROIDS = 5;
   this.asteroids = [];
   this.addAsteroids();
 }
@@ -154,13 +167,29 @@ Game.prototype.defaultAsteroid = function() {
 
 Game.prototype.addAsteroids = function() {
   for (let i = 0; i < this.NUM_ASTEROIDS; i++) {
-    console.log(this.randomPosition());
     this.asteroids.push(new Asteroid(this.defaultAsteroid()));
   }
 };
 
-Game.prototype.randomPosition = function() {
-  return [(this.DIM_X * Math.random()), (this.DIM_Y * Math.random())];
+Game.prototype.checkCollisions = function() {
+  const asteroids = this.asteroids;
+  for (let i = 0; i < asteroids.length; i++) {
+    for (let j = 0; j < asteroids.length; j++) {
+      if (i !== j) {
+        const ast1 = asteroids[i];
+        const ast2 = asteroids[j];
+        if (ast1.isCollideWith(ast2)) {
+          let distance =  Util.distance(ast1.pos, ast2.pos);
+          alert(
+          `COLLISION \n
+          pos1: ${ast1.pos} \n
+          pos2: ${ast2.pos} \n
+          distance: ${distance}`
+          );
+        }
+      }
+    }
+  }
 };
 
 Game.prototype.draw = function(ctx) {
@@ -174,6 +203,18 @@ Game.prototype.moveObjects = function() {
   for (let i = 0; i < this.asteroids.length; i++) {
     this.asteroids[i].move();
   }
+};
+
+Game.prototype.step = function() {
+  this.moveObjects();
+  this.checkCollisions();
+};
+
+Game.prototype.randomPosition = function() {
+  return [
+    this.DIM_X * Math.random(),
+    this.DIM_Y * Math.random()
+  ];
 };
 
 Game.prototype.wrap = function(pos) {
@@ -240,7 +281,7 @@ function GameView(ctx) {
 
 GameView.prototype.start = function(ctx) {
   setInterval(() => {
-    this.game.moveObjects();
+    this.game.step();
     this.game.draw(ctx);
   }, 15);
 };
