@@ -6,9 +6,9 @@
 /******/ 	function __webpack_require__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-/******/
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
@@ -63,26 +63,81 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const View = __webpack_require__(4);
+const Board = __webpack_require__(1);
 
-$(() => {
-  let $ele = $('.snake');
-  new View($ele);
-});
+const KEYPRESSES = {
+  37: 'W',
+  38: 'N',
+  39: 'E',
+  40: 'S'
+};
+
+class View {
+  constructor (rootEl) {
+    this.board = new Board();
+    this.$el = rootEl;
+    this.$grid = [];
+    this.setupBoard();
+    this.bindEvents();
+    setInterval(() => {
+      this.step();
+    }, 100);
+  }
+
+  bindEvents() {
+    $(document).on("keydown", event => {
+      this.handleKeyEvent(event);
+    });
+  }
+
+  setupBoard() {
+    for (let i = 0; i < 25; i++) {
+      let $row = $('<div class="row"></div>');
+      for (let j = 0; j < 25; j++) {
+        let $square = $('<div class="square"></div>');
+        $row.append($square);
+      }
+      this.$grid.push($row);
+      this.$el.append($row);
+    }
+  }
+
+  render() {
+    $('.segment').removeClass('segment')
+    this.board.snake.segments.forEach(coord => {
+
+      let $row = this.$grid[coord.pos[0]].children();
+      let $square = $row.eq(coord.pos[1]);
+      $square.addClass('segment');
+    });
+  }
+
+  handleKeyEvent(event) {
+    let key = event.keyCode;
+    this.board.snake.turn(KEYPRESSES[key]);
+  }
+
+  step() {
+    this.board.snake.move();
+    this.render();
+  }
+}
+
+module.exports = View;
 
 
 /***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Snake = __webpack_require__(3);
+const Snake = __webpack_require__(4);
 
 class Board {
   constructor () {
@@ -103,9 +158,8 @@ class Coord {
   }
 
   plus(dir) {
-    let x = this.pos[0] + dir[0];
-    let y = this.pos[1] + dir[1];
-    return new Coord([x, y]);
+    this.pos[0] += dir[0];
+    this.pos[1] += dir[1];
   }
 
   equals(pos) {
@@ -123,6 +177,18 @@ module.exports = Coord;
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
+const View = __webpack_require__(0);
+
+$(() => {
+  let $ele = $('.snake');
+  new View($ele);
+});
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
 const Coord = __webpack_require__(2);
 
 const DIRS = {
@@ -135,17 +201,19 @@ const DIRS = {
 class Snake {
   constructor() {
     this.direction = 'N';
-    this.head = [12, 12];
-    this.tailLength = 5;
-    this.segments = [this.head];
+    this.head = new Coord([12, 12]);
+    this.segments = [this.head, new Coord([13, 12]), new Coord([14, 12])];
   }
 
   move() {
-    this.segments.push(this.head);
-    if (this.segments.length > this.tailLength) {
-      this.segments.shift(this.segments.length - this.tailLength);
+    let oldPos = this.head.pos.map(val => val);
+    this.head.plus(DIRS[this.direction]);
+
+    for (let i = 1; i < this.segments.length; i++) {
+      let temp = this.segments[i].pos.map(val => val);
+      this.segments[i].pos = oldPos;
+      oldPos = temp;
     }
-    this.head = [this.head[0] + DIRS[this.direction][0], this.head[1] + DIRS[this.direction][1]];
   }
 
   turn(dir) {
@@ -162,66 +230,6 @@ class Snake {
 }
 
 module.exports = Snake;
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Board = __webpack_require__(1);
-
-const KEYPRESSES = {
-  37: 'W',
-  38: 'N',
-  39: 'E',
-  40: 'S'
-};
-
-class View {
-  constructor (rootEl) {
-    this.board = new Board();
-    this.$el = rootEl;
-    this.bindEvents();
-    setInterval(() => {
-      this.step();
-    }, 100);
-  }
-
-  bindEvents() {
-    $(document).on("keydown", event => {
-      this.handleKeyEvent(event);
-    });
-  }
-
-  render() {
-    this.$el.html('');
-    for (let i = 0; i < 25; i++) {
-      let $row = $('<div class="row"></div>');
-      for (let j = 0; j < 25; j++) {
-        let $square = $('<div class="square"></div>');
-        this.board.snake.segments.forEach( seg => {
-          if (seg[0] === i && seg[1] === j) {
-            $square.addClass('segment');
-          }
-        });
-        $row.append($square);
-      }
-      this.$el.append($row);
-    }
-  }
-
-  handleKeyEvent(event) {
-    let key = event.keyCode;
-    this.board.snake.turn(KEYPRESSES[key]);
-  }
-
-  step() {
-    this.board.snake.move();
-    this.render();
-  }
-}
-
-module.exports = View;
 
 
 /***/ })

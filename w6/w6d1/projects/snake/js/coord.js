@@ -4,9 +4,8 @@ class Coord {
   }
 
   plus(dir) {
-    let x = this.pos[0] + dir[0];
-    let y = this.pos[1] + dir[1];
-    return new Coord([x, y]);
+    this.pos[0] += dir[0];
+    this.pos[1] += dir[1];
   }
 
   equals(pos) {

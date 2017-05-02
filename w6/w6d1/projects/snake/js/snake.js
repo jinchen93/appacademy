@@ -10,17 +10,19 @@ const DIRS = {
 class Snake {
   constructor() {
     this.direction = 'N';
-    this.head = [12, 12];
-    this.tailLength = 5;
-    this.segments = [this.head];
+    this.head = new Coord([12, 12]);
+    this.segments = [this.head, new Coord([13, 12]), new Coord([14, 12])];
   }
 
   move() {
-    this.segments.push(this.head);
-    if (this.segments.length > this.tailLength) {
-      this.segments.shift(this.segments.length - this.tailLength);
+    let oldPos = this.head.pos.map(val => val);
+    this.head.plus(DIRS[this.direction]);
+
+    for (let i = 1; i < this.segments.length; i++) {
+      let temp = this.segments[i].pos.map(val => val);
+      this.segments[i].pos = oldPos;
+      oldPos = temp;
     }
-    this.head = [this.head[0] + DIRS[this.direction][0], this.head[1] + DIRS[this.direction][1]];
   }
 
   turn(dir) {
