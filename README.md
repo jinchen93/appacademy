@@ -25,3 +25,14 @@ All of my homework and projects for a/A!
 #### Day 2: Partials
 #### Day 3: Authentication
 #### Day 4: More Authentication + Layouts
+#### Day 5: Capybara + Rspec-Rails
+
+## Week 5
+#### Day 1: Polymorphic Associations
+#### Day 2: Rails Lite
+#### Day 3: Javascript (Closures, Scope, ES6, this)
+#### Day 4: Javascript (Callbacks, Modules, Async)
+#### Day 5: Javascript (HTML5 Canvas, Webpack, Prototypal Inheritance)
+
+## Week 6
+#### Day 1: jQuery + DOM Manipulation
