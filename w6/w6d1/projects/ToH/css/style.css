@@ -1,0 +1,48 @@
+ul, li {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+}
+
+ul {
+  display: block;
+  width: 100px;
+  height: 100px;
+  border-bottom: 5px solid black;
+  float: left;
+  margin: 25px;
+}
+
+ul:hover {
+  border-bottom: 5px solid blue;
+  cursor: crosshair;
+}
+
+.from {
+  border-bottom: 5px solid red;
+}
+
+li {
+  margin: 5px 0 5px 0;
+  list-style: none;
+  height: 25px;
+  padding: 0;
+  text-align: inherit;
+  border-radius: 12px;
+}
+
+.disk-1 {
+  background-color: grey;
+  width: 33%;
+}
+
+.disk-2 {
+  background-color: grey;
+  width: 66%;
+}
+
+.disk-3 {
+  background-color: grey;
+  width: 100%;
+}
