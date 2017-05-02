@@ -1,4 +1,4 @@
-const Coord = require('./coord.js');
+const Coord = require('./coord');
 
 const DIRS = {
   'N': [-1, 0],
@@ -15,14 +15,38 @@ class Snake {
   }
 
   move() {
-    let oldPos = this.head.pos.map(val => val);
+    this.oldPos = this.head.pos.map(val => val);
     this.head.plus(DIRS[this.direction]);
 
     for (let i = 1; i < this.segments.length; i++) {
       let temp = this.segments[i].pos.map(val => val);
-      this.segments[i].pos = oldPos;
-      oldPos = temp;
+      this.segments[i].pos = this.oldPos;
+      this.oldPos = temp;
     }
+  }
+
+  add() {
+    this.segments.push(new Coord(this.oldPos));
+  }
+
+  ateSelf() {
+    for (let i = 1; i < this.segments.length; i++) {
+      if (this.head.equals(this.segments[i].pos)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  outOfBounds() {
+    if (this.head.pos[0] > 24 || this.head.pos[1] > 24) {
+      return true;
+    }
+    if (this.head.pos[0] < 0 || this.head.pos[1] < 0) {
+      return true;
+    }
+
+    return false;
   }
 
   turn(dir) {

@@ -88,7 +88,7 @@ class View {
     this.bindEvents();
     setInterval(() => {
       this.step();
-    }, 100);
+    }, 75);
   }
 
   bindEvents() {
@@ -110,13 +110,24 @@ class View {
   }
 
   render() {
-    $('.segment').removeClass('segment')
+    $('.segment').removeClass('segment');
+    $('.apple').removeClass('apple');
+    $('.snake-head').removeClass('snake-head');
     this.board.snake.segments.forEach(coord => {
-
       let $row = this.$grid[coord.pos[0]].children();
       let $square = $row.eq(coord.pos[1]);
-      $square.addClass('segment');
+
+      if (coord === this.board.snake.head) {
+        $square.addClass('snake-head');
+      } else {
+        $square.addClass('segment');
+      }
     });
+
+    let applePos = this.board.apple.pos;
+    let $row = this.$grid[applePos[0]].children();
+    let $square = $row.eq(applePos[1]);
+    $square.addClass('apple');
   }
 
   handleKeyEvent(event) {
@@ -125,7 +136,25 @@ class View {
   }
 
   step() {
-    this.board.snake.move();
+    let snake = this.board.snake;
+    let apple = this.board.apple;
+    snake.move();
+
+    if (snake.head.equals(apple.pos)) {
+      snake.add();
+      this.board.generateApple();
+    }
+
+    if (snake.ateSelf()) {
+      alert('You ate yourself.');
+      this.board = new Board(this.$el);
+    }
+
+    if (snake.outOfBounds()) {
+      alert('Out of bounds!');
+      this.board = new Board(this.$el);
+    }
+
     this.render();
   }
 }
@@ -138,10 +167,16 @@ module.exports = View;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Snake = __webpack_require__(4);
+const Apple = __webpack_require__(5);
 
 class Board {
   constructor () {
     this.snake = new Snake();
+    this.generateApple();
+  }
+
+  generateApple() {
+    this.apple = new Apple(this.snake);
   }
 }
 
@@ -206,14 +241,38 @@ class Snake {
   }
 
   move() {
-    let oldPos = this.head.pos.map(val => val);
+    this.oldPos = this.head.pos.map(val => val);
     this.head.plus(DIRS[this.direction]);
 
     for (let i = 1; i < this.segments.length; i++) {
       let temp = this.segments[i].pos.map(val => val);
-      this.segments[i].pos = oldPos;
-      oldPos = temp;
+      this.segments[i].pos = this.oldPos;
+      this.oldPos = temp;
     }
+  }
+
+  add() {
+    this.segments.push(new Coord(this.oldPos));
+  }
+
+  ateSelf() {
+    for (let i = 1; i < this.segments.length; i++) {
+      if (this.head.equals(this.segments[i].pos)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  outOfBounds() {
+    if (this.head.pos[0] > 24 || this.head.pos[1] > 24) {
+      return true;
+    }
+    if (this.head.pos[0] < 0 || this.head.pos[1] < 0) {
+      return true;
+    }
+
+    return false;
   }
 
   turn(dir) {
@@ -230,6 +289,45 @@ class Snake {
 }
 
 module.exports = Snake;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+class Apple {
+  constructor(snake) {
+    this.snake = snake;
+    this.pos = this.randomPos();
+  }
+
+  randomPos() {
+    let pos = [
+      Math.floor(Math.random() * 25),
+      Math.floor(Math.random() * 25)
+    ];
+
+    if (this.availSpot(pos)) {
+      return pos;
+    } else {
+      this.randomPos();
+    }
+  }
+
+  availSpot(pos) {
+    let avail = true;
+
+    for (let i = 0; i < this.snake.segments.length; i++) {
+      if (this.snake.segments[i].pos === pos) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+}
+
+module.exports = Apple;
 
 
 /***/ })

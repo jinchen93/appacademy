@@ -1,4 +1,4 @@
-const Board = require('./board.js');
+const Board = require('./board');
 
 const KEYPRESSES = {
   37: 'W',
@@ -16,7 +16,7 @@ class View {
     this.bindEvents();
     setInterval(() => {
       this.step();
-    }, 100);
+    }, 75);
   }
 
   bindEvents() {
@@ -38,13 +38,24 @@ class View {
   }
 
   render() {
-    $('.segment').removeClass('segment')
+    $('.segment').removeClass('segment');
+    $('.apple').removeClass('apple');
+    $('.snake-head').removeClass('snake-head');
     this.board.snake.segments.forEach(coord => {
-
       let $row = this.$grid[coord.pos[0]].children();
       let $square = $row.eq(coord.pos[1]);
-      $square.addClass('segment');
+
+      if (coord === this.board.snake.head) {
+        $square.addClass('snake-head');
+      } else {
+        $square.addClass('segment');
+      }
     });
+
+    let applePos = this.board.apple.pos;
+    let $row = this.$grid[applePos[0]].children();
+    let $square = $row.eq(applePos[1]);
+    $square.addClass('apple');
   }
 
   handleKeyEvent(event) {
@@ -53,7 +64,25 @@ class View {
   }
 
   step() {
-    this.board.snake.move();
+    let snake = this.board.snake;
+    let apple = this.board.apple;
+    snake.move();
+
+    if (snake.head.equals(apple.pos)) {
+      snake.add();
+      this.board.generateApple();
+    }
+
+    if (snake.ateSelf()) {
+      alert('You ate yourself.');
+      this.board = new Board(this.$el);
+    }
+
+    if (snake.outOfBounds()) {
+      alert('Out of bounds!');
+      this.board = new Board(this.$el);
+    }
+
     this.render();
   }
 }

@@ -1,4 +1,4 @@
-const View = require('./snake-view.js');
+const View = require('./snake-view');
 
 $(() => {
   let $ele = $('.snake');
