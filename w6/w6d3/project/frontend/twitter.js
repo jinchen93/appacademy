@@ -8,6 +8,9 @@ $( () => {
     new FollowToggle($(btn));
   });
 
-  let $userSearch = $('nav.users-search');
+  const $userSearch = $('nav.users-search');
   new UsersSearch($userSearch);
+
+  const $tweetCompose = $('.tweet-compose');
+  new TweetCompose($tweetCompose);
 });

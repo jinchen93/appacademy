@@ -8,7 +8,7 @@ class TweetsController < ApplicationController
     @tweet = current_user.tweets.build(tweet_params)
 
     if @tweet.save
-      response_to do |format|
+      respond_to do |format|
         format.html { redirect_to request.referrer }
         format.json { render :show }
       end
