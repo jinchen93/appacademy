@@ -71,12 +71,17 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const FollowToggle = __webpack_require__(1);
+const UsersSearch = __webpack_require__(3);
+const TweetCompose = __webpack_require__(4);
 
 $( () => {
   const $allFollowBtns = $('.follow-toggle');
   $allFollowBtns.each( (idx, btn) => {
     new FollowToggle($(btn));
   });
+
+  let $userSearch = $('nav.users-search');
+  new UsersSearch($userSearch);
 });
 
 
@@ -87,10 +92,10 @@ $( () => {
 const APIUtil = __webpack_require__(2);
 
 class FollowToggle {
-  constructor($el) {
+  constructor($el, options) {
     this.$el = $el;
-    this.userId = $el.data('user-id');
-    this.followState = $el.data('initial-follow-state');
+    this.userId = $el.data('user-id') || options.userId;
+    this.followState = $el.data('initial-follow-state') || options.followState;
     this.render();
     this.bindClick();
   }
@@ -177,11 +182,90 @@ const APIUtil = {
       method: 'DELETE',
       dataType: 'JSON'
     })
+  ),
+
+  searchUsers: queryVal => (
+    $.ajax({
+      url: '/users/search',
+      data: { query: queryVal },
+      dataType: 'JSON'
+    })
   )
 
 };
 
 module.exports = APIUtil;
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const APIUtil = __webpack_require__(2);
+const FollowToggle = __webpack_require__(1);
+
+class UsersSearch {
+  constructor($el) {
+    this.$input = $el.find('.search-input');
+    this.$ul = $el.find('.users');
+    this.bindEvent();
+  }
+
+  bindEvent() {
+    this.$input.on('keyup', e => this.handleInput(e));
+  }
+
+  handleInput(e) {
+    this.resetList();
+    let val = e.currentTarget.value;
+    APIUtil.searchUsers(val)
+      .then(users => this.handleUsers(users));
+  }
+
+  handleUsers(users) {
+    users.forEach(user => {
+      this.$ul.append(this.updateList(user));
+    });
+  }
+
+  makeNewFollowToggle($ele, user) {
+    new FollowToggle($ele, {
+      userId: user.id,
+      followState: user.followed ? 'followed' : 'unfollowed'
+    });
+  }
+
+  resetList() {
+    this.$ul.html('');
+  }
+
+  updateList(user) {
+    let $li = $('<li></li>');
+    let $link = $(`<a href="/users/${user.id}">${user.username}</a>`);
+    let $followBtn = $(`<button></button>`);
+
+    this.makeNewFollowToggle($followBtn, user);
+
+    $link.append($followBtn);
+    $li.append($link);
+    return $li;
+  }
+}
+
+module.exports = UsersSearch;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+class TweetCompose {
+  constructor($el) {
+    this.$el = $el;
+  }
+}
+
+module.exports = TweetCompose;
 
 
 /***/ })
