@@ -277,20 +277,38 @@ class TweetCompose {
   constructor($el) {
     this.$el = $el;
     this.$feed = this.findFeed();
+    this.$mentionedUsers = $('.mentioned-users');
     this.bindEvents();
+  }
+
+  addMentionedUser(e) {
+    e.preventDefault();
+    const selectHTML = this.$el.find('script').html();
+    this.$mentionedUsers.append(selectHTML);
+    this.bindMentionEvent();
+    return false;
   }
 
   bindEvents() {
     this.$el.on('submit', e => this.submit(e));
     this.$el.find('textarea').on('input', e => this.handleCharsLeft(e));
+    $('a.add-mentioned-user').on('click', e => {
+      this.addMentionedUser(e);
+    });
+  }
+
+  bindMentionEvent() {
+    $('a.remove-mentioned-user').on('click', e => {
+      this.removeMentionedUser(e);
+    });
   }
 
   clearInput() {
     const $textarea = this.$el.find('textarea');
-    const $mention = this.$el.find('select');
+    const $mentions = this.$el.find('script').siblings();
 
     $textarea.val('');
-    $mention.val('');
+    $mentions.html('');
   }
 
   create(data) {
@@ -340,8 +358,14 @@ class TweetCompose {
     this.clearInput();
     this.enable();
     const $li = this.generateTweetListItem(res);
-    console.log(res);
     this.$feed.prepend($li);
+  }
+
+  removeMentionedUser(e) {
+    e.preventDefault();
+    const $link = $(e.currentTarget);
+    const $div = $link.parent();
+    $div.html('');
   }
 
   renderCharsLeft($char, charLength) {
