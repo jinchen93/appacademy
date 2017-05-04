@@ -1,9 +1,10 @@
+const TweetUtil = require('./tweet_util');
 const APIUtil = require('./api_util');
 
 class TweetCompose {
   constructor($el) {
     this.$el = $el;
-    this.$feed = this.findFeed();
+    this.$feed = TweetUtil.findFeed.apply(this);
     this.$mentionedUsers = $('.mentioned-users');
     this.bindEvents();
   }
@@ -67,24 +68,10 @@ class TweetCompose {
     });
   }
 
-  findFeed() {
-    const feed = this.$el.data('tweets-ul');
-    return $(feed);
-  }
-
-  generateTweetListItem(res) {
-    const $li = $('<li></li>');
-    $li.append(res.content + ' -- ');
-    $li.append($(`<a href="/users/${res.user_id}">${res.user.username}</a> `));
-    $li.append(`-- ${res.created_at}`);
-    $li.append(this.renderMentions(res.mentions));
-    return $li;
-  }
-
   handleSuccess(res) {
     this.clearInput();
     this.enable();
-    const $li = this.generateTweetListItem(res);
+    const $li = TweetUtil.generateTweetListItem(res);
     this.$feed.prepend($li);
   }
 
@@ -103,22 +90,6 @@ class TweetCompose {
       $char.text(`${charLength - 140} characters above max length!`);
     } else {
       $char.text('');
-    }
-  }
-
-  renderMentions(mentions) {
-    if (mentions.length > 0) {
-      const $ul = $('<ul></ul>');
-      mentions.forEach(mention => {
-        const $li = $('<li></li>');
-        $li.append(
-          `<a href="/users/${mention.user_id}">${mention.user.username}</a>`
-        );
-        $ul.append($li);
-      });
-      return $ul;
-    } else {
-      return '';
     }
   }
 

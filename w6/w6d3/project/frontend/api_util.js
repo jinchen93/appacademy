@@ -18,6 +18,7 @@ const APIUtil = {
   searchUsers: queryVal => (
     $.ajax({
       url: '/users/search',
+      method: 'GET',
       data: { query: queryVal },
       dataType: 'JSON'
     })
@@ -28,6 +29,17 @@ const APIUtil = {
       url: '/tweets',
       method: 'POST',
       data: data,
+      dataType: 'JSON'
+    })
+  ),
+
+  fetchTweets: maxCreatedAt => (
+    $.ajax({
+      url: '/feed',
+      method: 'GET',
+      data: {
+        max_created_at: maxCreatedAt
+      },
       dataType: 'JSON'
     })
   )

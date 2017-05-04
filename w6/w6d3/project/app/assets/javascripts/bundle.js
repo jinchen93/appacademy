@@ -73,6 +73,7 @@
 const FollowToggle = __webpack_require__(1);
 const UsersSearch = __webpack_require__(3);
 const TweetCompose = __webpack_require__(4);
+const InfiniteTweets = __webpack_require__(6);
 
 $( () => {
   const $allFollowBtns = $('.follow-toggle');
@@ -85,6 +86,9 @@ $( () => {
 
   const $tweetCompose = $('.tweet-compose');
   new TweetCompose($tweetCompose);
+
+  const $infiniteTweets = $('a.fetch-more');
+  new InfiniteTweets($infiniteTweets);
 });
 
 
@@ -190,6 +194,7 @@ const APIUtil = {
   searchUsers: queryVal => (
     $.ajax({
       url: '/users/search',
+      method: 'GET',
       data: { query: queryVal },
       dataType: 'JSON'
     })
@@ -200,6 +205,17 @@ const APIUtil = {
       url: '/tweets',
       method: 'POST',
       data: data,
+      dataType: 'JSON'
+    })
+  ),
+
+  fetchTweets: maxCreatedAt => (
+    $.ajax({
+      url: '/feed',
+      method: 'GET',
+      data: {
+        max_created_at: maxCreatedAt
+      },
       dataType: 'JSON'
     })
   )
@@ -271,12 +287,13 @@ module.exports = UsersSearch;
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
+const TweetUtil = __webpack_require__(5);
 const APIUtil = __webpack_require__(2);
 
 class TweetCompose {
   constructor($el) {
     this.$el = $el;
-    this.$feed = this.findFeed();
+    this.$feed = TweetUtil.findFeed.apply(this);
     this.$mentionedUsers = $('.mentioned-users');
     this.bindEvents();
   }
@@ -340,24 +357,10 @@ class TweetCompose {
     });
   }
 
-  findFeed() {
-    const feed = this.$el.data('tweets-ul');
-    return $(feed);
-  }
-
-  generateTweetListItem(res) {
-    const $li = $('<li></li>');
-    $li.append(res.content + ' -- ');
-    $li.append($(`<a href="/users/${res.user_id}">${res.user.username}</a> `));
-    $li.append(`-- ${res.created_at}`);
-    $li.append(this.renderMentions(res.mentions));
-    return $li;
-  }
-
   handleSuccess(res) {
     this.clearInput();
     this.enable();
-    const $li = this.generateTweetListItem(res);
+    const $li = TweetUtil.generateTweetListItem(res);
     this.$feed.prepend($li);
   }
 
@@ -379,7 +382,34 @@ class TweetCompose {
     }
   }
 
-  renderMentions(mentions) {
+  submit(e) {
+    e.preventDefault();
+    const $form = $(e.currentTarget);
+    const data = $form.serialize();
+
+    this.disable();
+    this.create(data);
+  }
+}
+
+module.exports = TweetCompose;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+const TweetUtil = {
+  generateTweetListItem: function(res) {
+    const $li = $('<li></li>');
+    $li.append(res.content + ' -- ');
+    $li.append($(`<a href="/users/${res.user_id}">${res.user.username}</a> `));
+    $li.append(`-- ${res.created_at}`);
+    $li.append(this.renderMentions(res.mentions));
+    return $li;
+  },
+
+  renderMentions: function(mentions) {
     if (mentions.length > 0) {
       const $ul = $('<ul></ul>');
       mentions.forEach(mention => {
@@ -393,19 +423,64 @@ class TweetCompose {
     } else {
       return '';
     }
+  },
+
+  findFeed: function() {
+    console.log(this);
+    const feed = this.$el.data('tweets-ul');
+    return $(feed);
+  }
+};
+
+module.exports = TweetUtil;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const TweetUtil = __webpack_require__(5);
+const APIUtil = __webpack_require__(2);
+
+class InfiniteTweets {
+  constructor($el) {
+    this.$el = $el;
+    this.$feed = TweetUtil.findFeed.apply(this);
+    this.maxCreatedAt = null;
+    this.bindEvents();
   }
 
-  submit(e) {
+  bindEvents() {
+    this.$el.on('click', e => this.handleClick(e));
+  }
+
+
+  handleClick(e) {
     e.preventDefault();
-    const $form = $(e.currentTarget);
-    const data = $form.serialize();
-
-    this.disable();
-    this.create(data);
+    console.log('asdhioasdh');
+    if (this.maxCreatedAt) {
+      APIUtil.fetchTweets(this.maxCreatedAt)
+      .then(tweets => this.insertTweets(tweets));
+    } else {
+      APIUtil.fetchTweets()
+      .then(tweets => this.insertTweets(tweets));
+    }
   }
+
+  insertTweets(tweets) {
+    tweets.forEach(tweet => {
+      const $li = TweetUtil.generateTweetListItem(tweet);
+      this.$feed.append($li);
+    });
+    if (tweets.length > 0) {
+      const lastTweet = tweets[tweets.length - 1];
+      this.maxCreatedAt = lastTweet.created_at;
+    }
+  }
+
 }
 
-module.exports = TweetCompose;
+module.exports = InfiniteTweets;
 
 
 /***/ })
