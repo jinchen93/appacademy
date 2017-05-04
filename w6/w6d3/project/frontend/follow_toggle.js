@@ -63,7 +63,6 @@ class FollowToggle {
   }
 
   update(state) {
-    console.log(state);
     this.followState = state;
     this.render();
   }

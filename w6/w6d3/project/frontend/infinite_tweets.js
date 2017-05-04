@@ -16,7 +16,6 @@ class InfiniteTweets {
 
   handleClick(e) {
     e.preventDefault();
-    console.log('asdhioasdh');
     if (this.maxCreatedAt) {
       APIUtil.fetchTweets(this.maxCreatedAt)
       .then(tweets => this.insertTweets(tweets));

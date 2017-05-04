@@ -161,7 +161,6 @@ class FollowToggle {
   }
 
   update(state) {
-    console.log(state);
     this.followState = state;
     this.render();
   }
@@ -426,7 +425,6 @@ const TweetUtil = {
   },
 
   findFeed: function() {
-    console.log(this);
     const feed = this.$el.data('tweets-ul');
     return $(feed);
   }
@@ -457,7 +455,6 @@ class InfiniteTweets {
 
   handleClick(e) {
     e.preventDefault();
-    console.log('asdhioasdh');
     if (this.maxCreatedAt) {
       APIUtil.fetchTweets(this.maxCreatedAt)
       .then(tweets => this.insertTweets(tweets));

@@ -25,7 +25,6 @@ const TweetUtil = {
   },
 
   findFeed: function() {
-    console.log(this);
     const feed = this.$el.data('tweets-ul');
     return $(feed);
   }
