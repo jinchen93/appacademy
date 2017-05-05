@@ -1,4 +1,5 @@
 import React from 'react';
+import CalcButtons from './calc_buttons';
 
 class Calculator extends React.Component {
   constructor(props) {
@@ -8,6 +9,11 @@ class Calculator extends React.Component {
       num1: '',
       num2: ''
     };
+
+    this.add = this.add.bind(this);
+    this.subtract = this.subtract.bind(this);
+    this.multiply = this.multiply.bind(this);
+    this.divide = this.divide.bind(this);
   }
 
   setNum1(e) {
@@ -72,10 +78,13 @@ class Calculator extends React.Component {
         <button onClick={ () => this.clear() }>Clear</button>
 
         <br/>
-        <button onClick={ () => this.add() }>+</button>
-        <button onClick={ () => this.subtract() }>-</button>
-        <button onClick={ () => this.multiply() }>*</button>
-        <button onClick={ () => this.divide() }>/</button>
+        
+        <CalcButtons 
+          add={this.add}
+          subtract={this.subtract}
+          multiply={this.multiply}
+          divide={this.divide}
+        />
 
       </div>
     );
