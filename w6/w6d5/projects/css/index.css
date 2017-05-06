@@ -1,0 +1,54 @@
+body {
+  font-family: 'Anonymous Pro', monospace;
+}
+
+#root {
+  display: block;
+  margin: auto 300px;
+}
+
+.clock {
+  padding: 10px;
+  border: 5px solid black;
+  background-color: rgba(255, 87, 51, 0.7);
+}
+
+.weather {
+  text-align: center;
+  padding: 10px;
+  border: 5px solid black;
+  background-color: rgba(76, 234, 0, 0.7);
+  align-items: center;
+}
+
+.autocomplete {
+  padding: 10px;
+  border: 5px solid black;
+  background-color: rgba(122, 239, 255, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.autocomplete ul {
+  width: 50%;
+}
+
+.autocomplete li {
+  transition: 1s, bottom;
+}
+
+.autocomplete hr {
+  width: 100%;
+}
+
+.clock > p {
+  display: flex;
+  justify-content: space-between;
+  flex-flow: row wrap;
+}
+
+img {
+  max-width: 100%;
+  max-height: auto;
+}
