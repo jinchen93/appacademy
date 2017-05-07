@@ -75,7 +75,7 @@ class Calculator extends React.Component {
           value={this.state.num2} 
         />
 
-        <button onClick={ () => this.clear() }>Clear</button>
+        <button onClick={ this.clear.bind(this) }>Clear</button>
 
         <br/>
         
