@@ -1,0 +1,43 @@
+body {
+  display: flex;
+}
+
+#root {
+  display: inline-block;
+  margin: 5% auto;
+  background-color: greenyellow;
+  border: 2px solid rebeccapurple;
+}
+
+.row {
+  height: 30px;
+}
+
+.tile {
+  outline: 1px solid black;
+  display: block;
+  float: left;
+  height: 30px;
+  width: 30px;
+}
+
+.unexplored:hover {
+  transform: scale(1.1);
+  border-style: outset;
+  border: none;
+  background-color: peru;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.unexplored {
+  background-color: peachpuff;
+}
+
+.empty {
+  background-color: gainsboro;
+}
+
+.bomb {
+  background-color: red;
+}
