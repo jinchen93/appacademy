@@ -3,5 +3,6 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: { format: :json } do
     resources :todos, only: [:show, :index, :update, :create, :destroy]
+    resources :steps, only: [:show, :index, :update, :create, :destroy]
   end
 end
