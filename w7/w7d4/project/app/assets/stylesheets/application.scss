@@ -1,0 +1,258 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+@import "variables";
+
+html {
+  height: 100%;
+}
+
+body {
+  font-family: sans-serif;
+  background: white;
+  color: $grey;
+  font-size: 12px;
+  height: 100%;
+}
+
+header {
+  display: flex;
+  justify-content: center;
+  background-color: $red;
+
+  img {
+    width: 43px;
+    height: 43px;
+  }
+}
+
+
+nav {
+  width: 900px;
+  background-color: $red;
+  padding: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  ul {
+    display: flex;
+    justify-content: flex-end;
+
+    li {
+      a {
+        background-color: white;
+        border-radius: 4px;
+        color: $grey;
+        font-weight: 700;
+        display: block;
+        padding: 15px;
+        text-decoration: none;
+        text-transform: uppercase;
+        cursor: pointer;
+        position: relative;
+        -webkit-transition: box-shadow 0.1s ease-out, background-color 0.1s ease-in-out;
+        -moz-transition: box-shadow 0.1s ease-out, background-color 0.1s ease-in-out;
+        -ms-transition: box-shadow 0.1s ease-out, background-color 0.1s ease-in-out;
+        -o-transition: box-shadow 0.1s ease-out, background-color 0.1s ease-in-out;
+        transition: box-shadow 0.1s ease-out, background-color 0.1s ease-in-out;
+
+        &:hover {
+          color: $light-grey;
+          -webkit-box-shadow: 0px 2px 2px 1px rgba(0,0,0,0.75);
+          -moz-box-shadow: 0px 2px 2px 1px rgba(0,0,0,0.75);
+          box-shadow: 0px 2px 2px 1px rgba(0,0,0,0.75);
+        }
+
+        &:active {
+          background-color: $light-grey;
+          color: white;
+          -webkit-box-shadow: none;
+          -moz-box-shadow: none;
+          box-shadow: none;
+        }
+      }
+    }
+  }
+}
+
+#root {
+  height: 100%;
+  // padding-top: 20px;
+}
+
+h2 {
+  font-size: 32px;
+}
+
+h3 {
+  font-size: 24px;
+  text-align: center;
+  color: $black;
+}
+
+.pokedex {
+  display: flex;
+  background-color: #fbfbfb;
+  .pokemon-list {
+    flex: 2;
+    height: 100vh;
+    overflow: scroll;
+    // transition: all 2s;
+    box-shadow: 1px 3px 8px 2px rgba(0, 0, 0, 0.16);
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    > ul {
+      background-color: white;
+      margin: 0;
+      padding: 0;
+      li {
+        position: relative;
+        display: flex;
+        align-items: center;
+        transition: all 0.2s;
+        text-rendering: optimizeLegibility;
+        height: 43px;
+        list-style: none;
+
+        a {
+          padding-left: 20px;
+          width: 100%;
+          height: 43px;
+          display: inherit;
+          align-items: inherit;
+          text-decoration: none;
+          color: inherit;
+        }
+
+        img {
+          width: 43px;
+          height: 43px;
+          margin: auto 5px;
+        }
+
+        &:hover img, .active img {
+          position: absolute;
+          filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.7));
+          margin:  0 30px;
+          width: 55px;
+          height: 55px;
+          transition: all 1s;
+        }
+
+        a:hover, a.active {
+          // background-color: $red;
+          padding-left: 30px;
+          cursor: pointer;
+          transition: all 1s;
+          box-shadow: 0px 5px 4px -3px #e2e1e1;
+          background-color: #FF836C;
+          color: #fff;
+          font-weight: bold;
+          // border-bottom:
+        }
+
+        &:hover .poke-name, .active .poke-name {
+          margin-left: 100px;
+          animation-duration: 1s;
+          // transition: all 5.1s !important;
+          z-index: 1000;
+        }
+      }
+    }
+
+
+  }
+
+  .pokemon-list:hover {
+    overflow: scroll;
+    &::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+
+      background-color: $red
+    }
+  }
+
+  .pokemonDetailWrapper {
+    flex: 5;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    > img {
+      align-self: center;
+      height: 250px;
+      width: 250px;
+      filter: drop-shadow(5px 8px 7px rgba(0,0,0,0.7));
+    }
+
+    ul {
+      border-radius: 7px;
+      background-color: #FF836C;
+      color: #5a5757;
+      padding-bottom: 30px;
+      box-shadow: inset 0px 0px 18px 2px rgba(0, 0, 0, 0.49);
+      margin-bottom: 0px;
+      margin-top: 20px;
+
+      li {
+        list-style: none;
+        font-size: 20px;
+        padding: 5px 0;
+
+        img {
+          width: 43px;
+          height: 43px;
+        }
+      }
+    }
+
+    .pokemonDetailItems {
+      padding: 0;
+      background-color: #adadad;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      padding: 30px;
+
+      .pokemon-items {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        position: relative;
+
+        img {
+          width: 10vw;
+          height: 10vw;
+          transition: all 0.4s;
+        }
+
+        a:hover img, .active img{
+          filter: drop-shadow(3px 4px 7px rgba(0, 0, 0, 0.7));
+          transition: all 0.4s;
+        }
+      }
+
+      .pokemon-item-properties {
+        padding-top: 20px;
+        h4 {
+          margin: 0;
+          padding: 0;
+        }
+      }
+    }
+
+  }
+}
