@@ -1,21 +1,20 @@
-export const fetchAllPokemon = () => (
+export const fetchAllPokemon = () =>
   $.ajax({
-    method: 'GET',
-    url: '/api/pokemon'
-  })
-);
+    method: "GET",
+    url: "/api/pokemon"
+  });
 
-export const fetchPokemonDetails = id => (
+export const fetchPokemonDetails = id =>
   $.ajax({
-    method: 'GET',
+    method: "GET",
     url: `/api/pokemon/${id}`
-  })
-);
+  });
 
-export const createPokemon = pokemon => (
-  $.ajax({
-    method: 'POST',
+export const createPokemon = pokemon => {
+  console.log(pokemon);
+  return $.ajax({
+    method: "POST",
     url: `/api/pokemon`,
-    data:({ pokemon })
-  })
-);
+    data: { pokemon }
+  });
+};

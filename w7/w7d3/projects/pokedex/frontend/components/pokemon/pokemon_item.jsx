@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 class PokemonItem extends React.Component {
   constructor(props) {
@@ -17,9 +17,17 @@ class PokemonItem extends React.Component {
   render() {
     const { poke } = this.props;
     const { hover } = this.state;
-    return(
+    return (
       <li onMouseEnter={this.hoverHandler} onMouseLeave={this.hoverHandler}>
-        {poke.id} <img className={ hover ? "animated rubberBand" : "" } src={poke.image_url} alt={poke.name} /> <span className={ hover ? "animated fadeInLeft poke-name" : "poke-name" }>{poke.name}</span>
+        {poke.id}
+        <img
+          className={hover ? "animated rubberBand" : ""}
+          src={poke.image_url}
+          alt={poke.name}
+        />
+        <span className={hover ? "animated fadeInLeft poke-name" : "poke-name"}>
+          {poke.name}
+        </span>
       </li>
     );
   }

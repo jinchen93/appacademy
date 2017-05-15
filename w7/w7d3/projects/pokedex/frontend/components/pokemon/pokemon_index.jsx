@@ -1,5 +1,5 @@
-import React from 'react';
-import PokemonItem from './pokemon_item';
+import React from "react";
+import PokemonItem from "./pokemon_item";
 
 class PokemonIndex extends React.Component {
   constructor(props) {
@@ -15,11 +15,7 @@ class PokemonIndex extends React.Component {
 
     return (
       <ul>
-        {
-          pokemon.map((poke) => (
-            <PokemonItem key={poke.id} poke={poke} />
-          ))
-        }
+        {pokemon.map(poke => <PokemonItem key={poke.id} poke={poke} />)}
       </ul>
     );
   }
