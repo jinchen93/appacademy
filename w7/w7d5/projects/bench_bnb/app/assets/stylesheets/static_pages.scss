@@ -1,13 +1,50 @@
 // Place all the styles related to the StaticPages controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-#map-container {
-  width: 500px;
-  height: 500px;
-  box-shadow: 0px 2px 4px #ccc;
-}
 
 .bench-img {
   width: 50px;
   height: 50px;
+}
+
+.search {
+  display: flex;
+  justify-content: space-between;
+  height: 500px;
+
+  #map-container {
+    height: 500px;
+    width: 500px;
+    margin: 0;
+    box-shadow: 0px 2px 4px #ccc;
+  }
+
+  .bench-list {
+    margin: 0;
+    padding: 0;
+    width: calc(100% - 520px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 500px;
+    box-shadow: 0px 2px 4px #ccc;
+    list-style: none;
+    li {
+      padding: 0;
+      margin: 0;
+      box-shadow: 0px 2px 4px #ccc;
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      section {
+        flex: 1;
+        padding-left: 50px;
+      }
+      img {
+        height: 100px;
+        width: 100px;
+      }
+    }
+  }
 }

@@ -9,7 +9,7 @@ class BenchIndex extends React.Component {
       return <div className="spinner" />;
     } else {
       return (
-        <ul>
+        <ul className="bench-list">
           {benches.map((bench, idx) => (
             <BenchIndexItem bench={bench} key={"bench" + idx} />
           ))}
