@@ -3,7 +3,7 @@
   <head>
     <title>BenchBnb</title>
     <%= csrf_meta_tags %>
-
+    <%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=#{ ENV['google_api_key'] }&callback=initMap" %>
     <%= stylesheet_link_tag    'application', media: 'all' %>
     <%= javascript_include_tag 'application' %>
   </head>
