@@ -1,14 +1,14 @@
-import React from 'react';
-import merge from 'lodash/merge';
-import { Link, Redirect } from 'react-router-dom';
+import React from "react";
+import merge from "lodash/merge";
+import { Link, Redirect } from "react-router-dom";
 
 class SessionForm extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      username: '',
-      password: ''
+      username: "",
+      password: "",
     };
 
     this.update = this.update.bind(this);
@@ -28,28 +28,31 @@ class SessionForm extends React.Component {
   }
 
   render() {
-    const link = this.props.formType === '/login'
-      ? <Link to='/signup'>Signup</Link>
-      : <Link to='/login'>Login</Link>;
+    const link = this.props.formType === "/login"
+      ? <Link to="/signup">Signup</Link>
+      : <Link to="/login">Login</Link>;
 
-    const errors = this.props.errors.map( (error, idx) => (
+    const errors = this.props.errors.map((error, idx) => (
       <li key={idx}>{error}</li>
     ));
 
     if (this.props.loggedIn) {
-      return <Redirect to='/' />;
+      return <Redirect to="/" />;
     } else {
       return (
         <div>
-          <h3>{ this.props.formType === '/login' ? 'Log in' : 'Sign up' }</h3>
-          { link }
+          <h3>
+            {this.props.formType === "/login" ? "Log in" : "Sign up"}
+          </h3>
+          {link}
           <ul>
-            { errors }
+            {errors}
           </ul>
           <form>
             <label>
               Username
-              <input type="text"
+              <input
+                type="text"
                 name="username"
                 value={this.state.username}
                 onChange={this.update}
@@ -58,7 +61,8 @@ class SessionForm extends React.Component {
             <br />
             <label>
               Password
-              <input type="password"
+              <input
+                type="password"
                 name="password"
                 value={this.state.password}
                 onChange={this.update}

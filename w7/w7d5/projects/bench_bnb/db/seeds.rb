@@ -13,17 +13,20 @@ Bench.destroy_all
 bench1 = Bench.create(
   description: 'Zeitgeist Bench',
   lat: 37.770018,
-  lng: -122.422219
+  lng: -122.422219,
+  seating: 1
 )
 
 bench2 = Bench.create(
   description: 'Clean Tenderloin Bench',
-  lat: 37.784943, 
-  lng: -122.415374
+  lat: 37.784943,
+  lng: -122.415374,
+  seating: 3
 )
 
 bench3 = Bench.create(
   description: 'Rich Bench',
   lat: 37.784765,
-  lng: -122.402752
+  lng: -122.402752,
+  seating: 1
 )

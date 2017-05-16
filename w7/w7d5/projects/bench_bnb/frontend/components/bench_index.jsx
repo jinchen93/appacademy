@@ -6,7 +6,14 @@ class BenchIndex extends React.Component {
     const { benches } = this.props;
 
     if (Object.keys(benches).length === 0) {
-      return <div className="spinner" />;
+      return (
+        <div className="spinner-container">
+          <div className="spinner" />
+          <span>
+            Loading
+          </span>
+        </div>
+      );
     } else {
       return (
         <ul className="bench-list">
