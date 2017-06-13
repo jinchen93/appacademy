@@ -11,7 +11,7 @@ class DynamicArray
 
   # O(1)
   def [](index)
-    raise("index out of bounds") if index + 1 > @length
+    raise("index out of bounds") if index >= @length
     @store[index]
   end
 
@@ -80,11 +80,7 @@ class DynamicArray
     @capacity *= 2
     new_arr = StaticArray.new(@capacity)
     @length.times do |n|
-      if @store[n]
-        new_arr[n] = @store[n]
-      else
-        new_arr[n] = nil
-      end
+      new_arr[n] = self[n]
     end
     @store = new_arr
   end
