@@ -5,7 +5,8 @@ class DynamicArray
 
   def initialize
     @length = 0
-    @store = StaticArray.new(2)
+    @capacity = 8
+    @store = StaticArray.new(8)
   end
 
   # O(1)
@@ -21,6 +22,7 @@ class DynamicArray
 
   # O(1)
   def pop
+    raise("index out of bounds") if @length == 0
     @length -= 1
     data = @store[@length]
     @store[@length] = nil
@@ -30,17 +32,40 @@ class DynamicArray
   # O(1) ammortized; O(n) worst case. Variable because of the possible
   # resize.
   def push(val)
-    resize! unless @store[@length - 1].nil?
+    resize! if @length == @capacity
     @store[@length] = val
     @length += 1
   end
 
   # O(n): has to shift over all the elements.
   def shift
+    raise("index out of bounds") if @length == 0
+    shifted_el = @store[0]
+    @length.times do |n|
+      if n == @length
+        @store[n] = nil
+      else
+        @store[n] = @store[n + 1]
+      end
+    end
+    @length -= 1
   end
 
   # O(n): has to shift over all the elements.
   def unshift(val)
+    resize! if @length == @capacity
+    if @length == 0
+      @store[0] = val
+    else
+      prev_el = @store[0]
+      @store[0] = val
+      (1..@length).each do |n|
+        placeholder = @store[n]
+        @store[n] = prev_el
+        prev_el = placeholder
+      end
+    end
+    @length += 1
   end
 
   protected
@@ -52,7 +77,8 @@ class DynamicArray
 
   # O(n): has to copy over all the elements to the new store.
   def resize!
-    new_arr = StaticArray.new(@length * 2)
+    @capacity *= 2
+    new_arr = StaticArray.new(@capacity)
     @length.times do |n|
       if @store[n]
         new_arr[n] = @store[n]
