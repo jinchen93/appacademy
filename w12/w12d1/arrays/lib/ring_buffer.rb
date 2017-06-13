@@ -1,4 +1,3 @@
-require "byebug"
 require_relative "static_array"
 
 class RingBuffer
