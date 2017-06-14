@@ -6,7 +6,9 @@ class Array
   def hash
     hashed = length.hash
     each_with_index do |ele, idx|
-      hashed += (ele * idx).hash
+      if ele
+        hashed += (ele * idx).hash
+      end
     end
     hashed
   end
