@@ -54,7 +54,7 @@ class LinkedList
   def include?(key)
     include = false
     each do |node|
-      include = true if node.key == key
+      include = true if node && node.key == key
     end
     include
   end
@@ -88,14 +88,14 @@ class LinkedList
 
   def each
     curr_node = @head
-    until curr_node == last
+    until curr_node == last || curr_node.nil?
       curr_node = curr_node.next
       yield(curr_node)
     end
   end
 
   # uncomment when you have `each` working and `Enumerable` included
-  # def to_s
-  #   inject([]) { |acc, node| acc << "[#{node.key}, #{node.val}]" }.join(", ")
-  # end
+  def to_s
+    inject([]) { |acc, node| acc << "[#{node.key}, #{node.val}]" }.join(", ")
+  end
 end
