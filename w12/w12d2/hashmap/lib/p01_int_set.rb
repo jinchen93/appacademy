@@ -35,18 +35,28 @@ class IntSet
   end
 
   def insert(num)
+    self[num].push(num)
   end
 
   def remove(num)
+    self[num].each_with_index do |el, idx|
+      self[num].delete_at(idx) if el == num
+    end
   end
 
   def include?(num)
+    include = false
+    self[num].each do |el|
+      include = true if el == num
+    end
+    include
   end
 
   private
 
   def [](num)
     # optional but useful; return the bucket corresponding to `num`
+    @store[num % num_buckets]
   end
 
   def num_buckets
