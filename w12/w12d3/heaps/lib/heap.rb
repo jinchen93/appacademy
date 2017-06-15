@@ -16,7 +16,17 @@ class BinaryMinHeap
     elsif @store.length == 3
       @store[1], @store[2] = @store[2], @store[1]
     end
-    @store.shift
+
+    extracted = @store.shift
+
+    child_indices = BinaryMinHeap.child_indices(@store.length, 0)
+    swap_child_idx = BinaryMinHeap.find_child_swap_idx(@store, child_indices, &@prc)
+
+    if swap_child_idx && @prc.call(@store[0], @store[swap_child_idx]) > 0
+      @store = BinaryMinHeap.heapify_down(@store, 0, &@prc)
+    end
+
+    extracted
   end
 
   def peek
@@ -30,7 +40,7 @@ class BinaryMinHeap
     parent_val = @store[BinaryMinHeap.parent_index(idx)]
 
     if @prc.call(val, parent_val) < 0
-      @store = BinaryMinHeap.heapify_up(@store, idx, @prc)
+      @store = BinaryMinHeap.heapify_up(@store, idx, &@prc)
     end
   end
 
@@ -64,32 +74,14 @@ class BinaryMinHeap
     prc = prc || BinaryMinHeap.default_proc
 
     child_indices = BinaryMinHeap.child_indices(len, parent_idx)
-    first_child = array[child_indices.first]
-    last_child = array[child_indices.last]
+    swap_child_idx = BinaryMinHeap.find_child_swap_idx(array, child_indices, &prc)
 
-    if child_indices.empty?
-      swap_child_idx = nil
-    elsif child_indices.length == 1
-      swap_child_idx = child_indices.first
-    elsif prc.call(array[child_indices.first], array[child_indices.last]) > 0
-      swap_child_idx = child_indices.last
-    else
-      swap_child_idx = child_indices.first
-    end
+    return array if swap_child_idx.nil?
 
     array[parent_idx], array[swap_child_idx] = array[swap_child_idx], array[parent_idx]
 
     next_idxs = BinaryMinHeap.child_indices(len, swap_child_idx)
-
-    if next_idxs.empty?
-      next_swap_idx = nil
-    elsif next_idxs.length == 1
-      next_swap_idx = next_idxs.first
-    elsif prc.call(array[next_idxs.first], array[next_idxs.last]) > 0
-      next_swap_idx = next_idxs.last
-    else
-      next_swap_idx = next_idxs.first
-    end
+    next_swap_idx = BinaryMinHeap.find_child_swap_idx(array, next_idxs, &prc)
 
     if next_swap_idx && prc.call(array[swap_child_idx], array[next_swap_idx]) > 0
       BinaryMinHeap.heapify_down(array, swap_child_idx, len, &prc)
@@ -114,6 +106,18 @@ class BinaryMinHeap
       BinaryMinHeap.heapify_up(array, this_idx, array.length, &prc)
     else
       array
+    end
+  end
+
+  def self.find_child_swap_idx(array, idxs, &prc)
+    if idxs.empty?
+      return nil
+    elsif idxs.length == 1
+      return idxs.first
+    elsif prc.call(array[idxs.first], array[idxs.last]) > 0
+      return idxs.last
+    else
+      return idxs.first
     end
   end
 end
