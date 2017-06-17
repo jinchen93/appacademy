@@ -36,3 +36,42 @@ All of my homework and projects for a/A!
 
 ## Week 6
 #### Day 1: jQuery + DOM Manipulation
+#### Day 2: CSS Practice!
+#### Day 3: AJAX
+#### Day 4: jQuery Lite
+#### Day 5: Intro React
+
+## Week 7
+#### Day 1: React-Redux
+#### Day 2: Middleware in React-Redux
+#### Day 3: Jbuilder
+#### Day 4: React-Router v4
+#### Day 5: Frontend Auth
+
+## Week 8
+#### Day 1: Google Maps API
+#### Day 2, 3, 4, 5: Work on Full Stack Web App (Reedy):
+[Reedy Live Link](https://reedy.jinchen.io)
+
+[Repo](https://github.com/jinchen93/reedy)
+
+## Week 9
+#### Day 1, 2, 3, 4, 5: Work on Full Stack Web App (Reedy):
+[Reedy Live Link](https://reedy.jinchen.io)
+
+[Repo](https://github.com/jinchen93/reedy)
+
+## Week 10
+#### Day 1, 2, 3, 4, 5: Work on JavaScript Project (Boxfield):
+[Boxfield Live Link](https://boxfield.jinchen.io)
+
+[Repo](https://github.com/jinchen93/boxfield)
+
+## Week 11
+#### Day 1, 2, 3, 4, 5: Work on Flex Project (Synapsis):
+[Synapsis Live Link](https://synapsis-app.herokuapp.com)
+
+[Repo](https://github.com/ml653/synapsis)
+
+## Week 12
+#### Day 1, 2, 3, 4, 5: Algorithm Practice
