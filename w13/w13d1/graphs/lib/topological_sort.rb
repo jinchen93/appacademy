@@ -13,12 +13,14 @@ def topological_sort(vertices)
   until sort_queue.empty?
     current_vertex = sort_queue.shift
     sorted << current_vertex
-    current_vertex.out_edges.each do |edge|
+    edges = []
+    out_edges = current_vertex.out_edges.dup
+    out_edges.each do |edge|
       to_vertex = edge.to_vertex
       edge.destroy!
       sort_queue << to_vertex if to_vertex.in_edges.empty?
     end
   end
 
-  sorted
+  vertices.length == sorted.length ? sorted : []
 end
