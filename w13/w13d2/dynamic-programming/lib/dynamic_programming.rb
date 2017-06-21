@@ -17,16 +17,34 @@ class DynamicProgramming
   end
 
   def frog_hops(n)
-
+    cache = frog_cache_builder(n)
+    cache[n]
   end
 
   def frog_cache_builder(n)
     cache = {
       1 => [[1]],
       2 => [[1, 1], [2]],
-      3 => [[1, 1, 1], [1, 2], [3]]
+      3 => [[1, 1, 1], [1, 2], [2, 1], [3]]
     }
+    return cache if n < 4
 
+    (4..n).each do |i|
+      count = i - 1
+      steps = []
+      until count <= 0
+        cache[count].each do |combo|
+          sum = combo.inject(:+)
+          missing_step = i - sum
+          new_combo = combo.dup << missing_step
+          steps << new_combo
+        end
+        count -= 1
+      end
+      cache[i] = steps
+    end
+
+    cache
   end
 
   def frog_hops_top_down(n)
@@ -38,9 +56,24 @@ class DynamicProgramming
   def make_change(amt, coins)
   end
 
-  def maze_solver(maze, start_pos, end_pos)
+  def maze_solver(maze, start_pos, end_pos = nil)
+    start_row = start_pos[0]
+    start_col = start_pos[1]
+    mazes = []
+    return mazes if start_row >= maze.length
+    return mazes if start_col >= maze[0].length
+
+    return start_pos if maze[start_row][start_col] == 'F'
+
+    # Check top
+    mazes << maze_solver(maze, [start_row - 1, start_col])
+    # Check bottom
+    mazes << maze_solver(maze, [start_row + 1, start_col])
+    # Check right
+    mazes << maze_solver(maze, [start_row, start_col + 1])
+    # Check left
+    mazes << maze_solver(maze, [start_row, start_col - 1])
+
+    return mazes.min_by { |maze| maze.length }
   end
 end
-
-x = DynamicProgramming.new
-p x.blair_nums(6)
